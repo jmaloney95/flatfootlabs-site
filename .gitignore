@@ -1,0 +1,14 @@
+# Only the site lives here; Pages serves docs/.
+/*
+!/.gitignore
+!/README.md
+!/.github/
+!/docs/
+
+docs/README.md
+docs/patches/README.md
+docs/_test/
+
+# Never publish a built ROM. The site distributes a patch; players bring
+# their own base ROM.
+docs/**/*.gba
