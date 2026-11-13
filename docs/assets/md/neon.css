@@ -1,0 +1,305 @@
+/* The home page (index.html): the Mega Dimension in the key-art poster's look.
+   Loaded after wot.css and md.css, by the home page only (body.md-neon); the
+   rest of the site keeps paper and purple.
+
+   The poster's rules, carried over: a dark ground split between drained gray
+   and rift violet, with a halftone print over both; gold for the words that
+   matter (the edition line, the date, the numbers); violet for the rift; the
+   red 次元 seal is the only red; the Megas are pixel art at whole-number
+   scales, so the hero plates are shown at 1:1 (see index.html). */
+
+.md-neon {
+  --night: #0d0916;            /* the poster's ink: the plates' dark band runs straight into the page */
+  --night-raised: #1b1527;
+  --night-line: rgba(244, 241, 248, .12);
+  --on-night: #f4f1f8;
+  --on-night-soft: #c7c1d3;
+  --on-night-faint: #8f879d;
+  --violet: #963cff;           /* the lockup's own split colours */
+  --violet-glow: #c468ff;
+  --violet-deep: #5b1fb8;
+  --gold: #ffcd46;
+  --nx-panel: #161120;
+  --nx-line: rgba(196, 104, 255, .28);
+  --nx-seal: #d6282e;
+  background: var(--night);
+  color: var(--on-night);
+}
+
+/* ── the drop strip: the poster's gold band, moved to the top ────────── */
+.md-neon .md-drop { position: relative; background: var(--gold); color: var(--ink); font-family: var(--font-sans); font-weight: 700; font-size: 16px; letter-spacing: .2em; }
+.md-neon .md-drop-date { background: var(--ink); color: var(--gold); }
+.md-neon .md-drop-dot { color: rgba(13, 9, 22, .45); }
+
+/* ── header on the dark ground ──────────────────────────────────────── */
+.md-neon .ff-header { color: var(--on-night); }
+.md-neon .ff-logo-word small { color: var(--on-night-faint); }
+.md-neon .ff-nav a { color: var(--on-night); }
+.md-neon .ff-nav a::after { background: var(--gold); }
+.md-neon .ff-iconbtn { background: rgba(244, 241, 248, .08); color: var(--on-night); }
+.md-neon .ff-iconbtn:hover { background: var(--violet); }
+
+/* ── the top: header + hero over the key-art plate ──────────────────── */
+/* Wide screens: the 1920x1000 plate (8x Megas) anchored right at 1:1. Past
+   1920px the page's own ink takes over, through a fade at the plate's edge. */
+.nx-top {
+  position: relative; isolation: isolate; display: flex; flex-direction: column; min-height: 1000px;
+  background:
+    linear-gradient(90deg, var(--night) calc(100% - 1920px), transparent calc(100% - 1580px)),
+    url("hero-l.webp") right top / 1920px 1000px no-repeat,
+    var(--night);
+}
+.nx-hero { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 56px 170px; }
+.nx-art { display: none; }
+
+.nx-hero-copy { position: relative; z-index: 1; width: 520px; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+.nx-logo { display: block; width: 100%; height: auto; filter: drop-shadow(0 14px 30px rgba(0, 0, 0, .55)); }
+
+/* GBA ROM HACK [FREE UPDATE] */
+.nx-edition { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 16px; margin: 2px 0 0; font-family: var(--font-sans); font-weight: 700; text-transform: uppercase; color: var(--gold); }
+.nx-edition span { font-size: 25px; line-height: 1; letter-spacing: .28em; margin-right: -.28em; }
+.nx-edition b { font-weight: 600; font-size: 17px; line-height: 1; letter-spacing: .2em; padding: 7px 8px 6px 11px; border: 2px solid var(--gold); }
+
+/* PLAY FREE · NOV 17: the poster's button, two corners cut */
+.nx-cta {
+  --n: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 22px; width: 100%; height: 72px; padding: 0 28px;
+  background: var(--gold); color: var(--ink);
+  font-family: var(--font-sans); font-weight: 700; font-size: 32px; line-height: 1; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap;
+  clip-path: polygon(var(--n) 0, 100% 0, 100% calc(100% - var(--n)), calc(100% - var(--n)) 100%, 0 100%, 0 var(--n));
+  transition: background-color .15s ease, transform .15s ease;
+}
+.nx-cta i { font-style: normal; color: rgba(13, 9, 22, .5); }
+.nx-cta:hover { background: #ffdd78; transform: translateY(-2px); }
+.nx-cta:active { transform: translateY(0); }
+
+.nx-watch { display: inline-flex; align-items: center; gap: 10px; padding: 6px 0 5px; font-family: var(--font-sans); font-weight: 700; font-size: 15px; line-height: 1; letter-spacing: .22em; text-transform: uppercase; color: var(--on-night); box-shadow: inset 0 -2px 0 var(--violet); transition: box-shadow .15s ease, color .15s ease; }
+.nx-watch .ff-i { width: 11px; height: 11px; color: var(--violet-glow); }
+.nx-watch:hover { box-shadow: inset 0 -2px 0 var(--gold); color: var(--white); }
+
+/* the studio mark: the 3x3 grid and the name */
+.nx-studio { display: inline-flex; align-items: center; gap: 14px; margin-top: 4px; font-family: var(--font-sans); font-weight: 600; font-size: 17px; line-height: 1; letter-spacing: .32em; text-transform: uppercase; color: var(--white); }
+.nx-studio svg { flex: none; shape-rendering: crispEdges; }
+
+/* the 次元 seal, top left: the only red on the page */
+.nx-seal { position: absolute; left: 44px; top: 4px; z-index: 1; width: 56px; padding: 7px 0 8px; border-radius: 6px; background: var(--nx-seal); color: #fff0e6; font-family: "Yu Gothic", "Hiragino Sans", "Noto Sans JP", sans-serif; font-weight: 700; font-size: 22px; line-height: 1.12; text-align: center; transform: rotate(-6deg); box-shadow: 0 6px 18px rgba(0, 0, 0, .35); }
+
+/* the rift clock, top right: the game's 2:00 HUD, running (md.js) */
+.nx-chip { position: absolute; right: 56px; top: 4px; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.nx-chip-box { display: inline-flex; align-items: center; padding: 15px 16px 13px 20px; background: rgba(13, 9, 22, .9); box-shadow: inset 0 0 0 5px rgba(13, 9, 22, .9), inset 0 0 0 8px var(--violet); font-family: var(--font-pixel); font-size: 26px; line-height: 1; color: var(--white); font-variant-numeric: tabular-nums; }
+.nx-chip-box i { font-style: normal; }
+.nx-chip-box b { width: 13px; height: 18px; margin-left: 16px; background: var(--violet); }
+.nx-chip-box[data-state="late"] { color: var(--gold); }
+.nx-chip-box[data-state="collapse"] { background: var(--violet); }
+.nx-chip-box[data-state="collapse"] b { background: var(--gold); }
+.nx-chip small { font-family: var(--font-sans); font-weight: 700; font-size: 15px; line-height: 1; letter-spacing: .06em; text-transform: uppercase; color: var(--white); }
+
+/* the ruler down the right edge */
+.nx-ticks {
+  position: absolute; right: 18px; top: 150px; width: 26px; height: 226px; pointer-events: none;
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, .66) 0 2px, transparent 2px 16px) right top / 12px 100% no-repeat,
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, .66) 0 2px, transparent 2px 80px) right top / 26px 100% no-repeat;
+}
+
+/* the numbers, along the plate's dark band */
+.nx-facts { position: absolute; left: 56px; bottom: 44px; z-index: 1; display: flex; margin: 0; }
+.nx-facts > div { display: flex; align-items: center; gap: 12px; padding: 0 28px; border-left: 2px solid rgba(255, 205, 70, .32); }
+.nx-facts > div:first-child { padding-left: 0; border-left: 0; }
+.nx-facts dt { font-family: var(--font-display); font-size: 40px; line-height: 1; color: var(--gold); }
+.nx-facts dd { margin: 0; max-width: 12ch; font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--on-night-soft); }
+
+/* Laptops: the 1440x820 plate (6x Megas). */
+@media (max-width: 1599px) {
+  .nx-top {
+    min-height: 820px;
+    background:
+      linear-gradient(90deg, var(--night) calc(100% - 1440px), transparent calc(100% - 1160px)),
+      url("hero-m.webp") right top / 1440px 820px no-repeat,
+      var(--night);
+  }
+  .nx-hero { padding: 0 40px 132px; }
+  .nx-hero-copy { width: 430px; gap: 18px; }
+  .nx-edition span { font-size: 21px; }
+  .nx-edition b { font-size: 15px; }
+  .nx-cta { height: 62px; font-size: 27px; gap: 18px; }
+  .nx-seal { left: 30px; }
+  .nx-chip { right: 40px; }
+  .nx-chip-box { font-size: 22px; }
+  .nx-facts { left: 40px; bottom: 34px; }
+  .nx-facts dt { font-size: 34px; }
+  .nx-facts > div { padding: 0 22px; }
+}
+
+/* Tablets: the 1400x640 plate (4x Megas) above the words, centred and cropped
+   at 1:1; the words start on the plate's dark band. Phones get the 800x480 one. */
+@media (max-width: 1199px) {
+  .nx-top { min-height: 0; background: var(--night); }
+  .nx-hero { padding: 0 40px 64px; align-items: center; }
+  .nx-art { display: block; align-self: stretch; height: 640px; margin: 0 -40px; background: url("hero-s.webp") center top / 1400px 640px no-repeat; }
+  .nx-hero-copy { margin-top: -110px; }
+  .nx-seal { top: 10px; }
+  .nx-chip { top: 10px; }
+  .nx-ticks { display: none; }
+  .nx-facts { position: static; display: grid; grid-template-columns: repeat(4, max-content); margin-top: 46px; }
+}
+@media (max-width: 760px) {
+  .nx-facts { grid-template-columns: repeat(2, max-content); gap: 18px 0; }
+  .nx-facts > div:nth-child(3) { padding-left: 0; border-left: 0; }
+}
+@media (max-width: 600px) {
+  .md-neon .md-drop { font-size: 13px; letter-spacing: .12em; }
+  .nx-hero { padding: 0 18px 56px; }
+  .nx-art { height: 480px; margin: 0 -18px; background-image: url("hero-p.webp"); background-size: 800px 480px; }   /* 3x Megas */
+  .nx-hero-copy { width: 100%; margin-top: -84px; gap: 16px; }
+  .nx-logo { width: min(100%, 400px); }
+  .nx-edition span { font-size: 17px; letter-spacing: .22em; margin-right: -.22em; }
+  .nx-edition b { font-size: 13px; }
+  .nx-cta { --n: 12px; height: 56px; font-size: 21px; gap: 12px; padding: 0 16px; letter-spacing: .1em; }
+  .nx-studio { font-size: 14px; }
+  .nx-seal { left: 16px; width: 42px; font-size: 16px; padding: 5px 0 6px; }
+  .nx-chip { right: 16px; gap: 6px; }
+  .nx-chip-box { font-size: 15px; padding: 10px 10px 8px 13px; box-shadow: inset 0 0 0 3px rgba(13, 9, 22, .9), inset 0 0 0 5px var(--violet); }
+  .nx-chip-box b { width: 8px; height: 11px; margin-left: 9px; }
+  .nx-chip small { font-size: 11px; }
+  .nx-facts dt { font-size: 30px; }
+  .nx-facts > div { padding: 0 16px; gap: 10px; }
+}
+
+/* ── bands ──────────────────────────────────────────────────────────── */
+/* Each band opens on the poster's split: a short gold | violet rule. */
+.md-neon .nx-band { border-top: 1px solid rgba(255, 255, 255, .06); }
+.md-neon .nx-band::before { content: ""; position: absolute; left: 0; top: -1px; z-index: 1; width: min(420px, 40%); height: 3px; background: linear-gradient(90deg, var(--gold) 0 50%, var(--violet) 50% 100%); }
+/* the split ground: drained gray from the left, the rift's violet from the right */
+.md-neon .nx-split {
+  background-image:
+    var(--tex-grain-light),
+    radial-gradient(1000px 640px at 0% 0%, rgba(190, 186, 200, .12), transparent 62%),
+    radial-gradient(1000px 640px at 100% 100%, color-mix(in srgb, var(--violet) 24%, transparent), transparent 64%);
+}
+
+/* type: gold kickers in the poster's spaced capitals, headings with its gold/violet ghost */
+.md-neon .ff-kicker { font-family: var(--font-sans); font-weight: 700; font-size: 14px; letter-spacing: .26em; color: var(--gold); }
+.md-neon .ff-display { text-shadow: -2px 0 rgba(255, 205, 70, .45), 2px 0 rgba(150, 60, 255, .7); }
+.md-neon .ff-display em { color: var(--violet-glow); }
+.md-neon .ff-note { color: var(--on-night-faint); }
+.md-neon .ff-tag--ink { background: rgba(244, 241, 248, .1); color: var(--on-night); }
+
+/* the trailer frame takes the violet offset like the screens */
+.md-neon .ff-trailer-wrap { filter: drop-shadow(14px 14px 0 var(--violet)); }
+
+/* how a run works, the rules rows, the roads */
+.md-neon .md-step { background: var(--nx-panel); box-shadow: inset 0 0 0 1px var(--nx-line); }
+.md-neon .md-step img { border-color: #000; }
+.md-neon .md-rules { border: 0; gap: 1px; background: var(--nx-line); }
+.md-neon .md-rule { background: var(--nx-panel); }
+.md-neon .md-rule b { color: var(--on-night); }
+.md-neon .md-rule span { color: var(--on-night-soft); }
+.md-neon .md-rule .ff-tag--gold { color: var(--ink); }
+.md-neon .md-rule .ff-tag--ink { color: var(--on-night); }
+.md-neon .md-roads .md-rule b span { color: var(--violet-glow); }
+
+/* partners */
+.md-neon .md-partner { background: linear-gradient(180deg, #2c1f47, #17111f 78%); box-shadow: inset 0 0 0 1px var(--nx-line); }
+.md-neon .md-partner span { color: var(--on-night-soft); }
+.md-neon .md-partner-note ul { color: var(--on-night-soft); }
+.md-neon .md-partner-note li b { color: var(--on-night); }
+.md-neon .md-shot { border-color: #000; }
+
+/* how to update */
+.md-neon .g-step { background: var(--nx-panel); color: var(--on-night); box-shadow: inset 0 0 0 1px var(--nx-line); }
+.md-neon .g-step-no { color: var(--gold); }
+.md-neon .g-prose { color: var(--on-night-soft); }
+.md-neon .g-prose b { color: var(--on-night); }
+.md-neon .md-home-line { color: var(--on-night-soft); }
+.md-neon .md-home-line b { color: var(--on-night); }
+
+/* ── the card set, sealed ───────────────────────────────────────────── */
+.nx-cards {
+  background-image:
+    var(--tex-grain-light),
+    radial-gradient(640px 520px at 74% 44%, color-mix(in srgb, var(--violet) 30%, transparent), transparent 70%),
+    radial-gradient(520px 360px at 64% 70%, rgba(255, 205, 70, .08), transparent 70%);
+}
+.nx-cards-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center; }
+.nx-cards-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; min-width: 0; }
+.nx-pack-facts { display: flex; margin: 6px 0 0; padding: 0; list-style: none; }
+.nx-pack-facts li { display: flex; align-items: baseline; gap: 9px; padding: 0 24px; border-left: 2px solid rgba(255, 205, 70, .32); }
+.nx-pack-facts li:first-child { padding-left: 0; border-left: 0; }
+.nx-pack-facts b { font-family: var(--font-display); font-weight: 400; font-size: 44px; line-height: 1; color: var(--gold); }
+.nx-pack-facts span { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--on-night-soft); }
+.nx-pack-credit { margin: 0; font-family: var(--font-pixel); font-size: 9px; line-height: 12px; color: var(--on-night-faint); }
+
+.nx-pack-stage { display: flex; flex-direction: column; align-items: center; gap: 30px; perspective: 1400px; min-width: 0; }
+/* The booster pack, a stand-in until the locked pack art (assets/cards/pack.webp) replaces it:
+   a foil pillow with serrated, ridged crimps top and bottom, the same 960x1728 shape. */
+.nx-pack {
+  --nx-pack-shape: polygon(0.00% 0.69%, 1.25% 0.00%, 2.50% 0.69%, 3.75% 0.00%, 5.00% 0.69%, 6.25% 0.00%, 7.50% 0.69%, 8.75% 0.00%, 10.00% 0.69%, 11.25% 0.00%, 12.50% 0.69%, 13.75% 0.00%, 15.00% 0.69%, 16.25% 0.00%, 17.50% 0.69%, 18.75% 0.00%, 20.00% 0.69%, 21.25% 0.00%, 22.50% 0.69%, 23.75% 0.00%, 25.00% 0.69%, 26.25% 0.00%, 27.50% 0.69%, 28.75% 0.00%, 30.00% 0.69%, 31.25% 0.00%, 32.50% 0.69%, 33.75% 0.00%, 35.00% 0.69%, 36.25% 0.00%, 37.50% 0.69%, 38.75% 0.00%, 40.00% 0.69%, 41.25% 0.00%, 42.50% 0.69%, 43.75% 0.00%, 45.00% 0.69%, 46.25% 0.00%, 47.50% 0.69%, 48.75% 0.00%, 50.00% 0.69%, 51.25% 0.00%, 52.50% 0.69%, 53.75% 0.00%, 55.00% 0.69%, 56.25% 0.00%, 57.50% 0.69%, 58.75% 0.00%, 60.00% 0.69%, 61.25% 0.00%, 62.50% 0.69%, 63.75% 0.00%, 65.00% 0.69%, 66.25% 0.00%, 67.50% 0.69%, 68.75% 0.00%, 70.00% 0.69%, 71.25% 0.00%, 72.50% 0.69%, 73.75% 0.00%, 75.00% 0.69%, 76.25% 0.00%, 77.50% 0.69%, 78.75% 0.00%, 80.00% 0.69%, 81.25% 0.00%, 82.50% 0.69%, 83.75% 0.00%, 85.00% 0.69%, 86.25% 0.00%, 87.50% 0.69%, 88.75% 0.00%, 90.00% 0.69%, 91.25% 0.00%, 92.50% 0.69%, 93.75% 0.00%, 95.00% 0.69%, 96.25% 0.00%, 97.50% 0.69%, 98.75% 0.00%, 100.00% 0.69%, 100.00% 99.31%, 98.75% 100.00%, 97.50% 99.31%, 96.25% 100.00%, 95.00% 99.31%, 93.75% 100.00%, 92.50% 99.31%, 91.25% 100.00%, 90.00% 99.31%, 88.75% 100.00%, 87.50% 99.31%, 86.25% 100.00%, 85.00% 99.31%, 83.75% 100.00%, 82.50% 99.31%, 81.25% 100.00%, 80.00% 99.31%, 78.75% 100.00%, 77.50% 99.31%, 76.25% 100.00%, 75.00% 99.31%, 73.75% 100.00%, 72.50% 99.31%, 71.25% 100.00%, 70.00% 99.31%, 68.75% 100.00%, 67.50% 99.31%, 66.25% 100.00%, 65.00% 99.31%, 63.75% 100.00%, 62.50% 99.31%, 61.25% 100.00%, 60.00% 99.31%, 58.75% 100.00%, 57.50% 99.31%, 56.25% 100.00%, 55.00% 99.31%, 53.75% 100.00%, 52.50% 99.31%, 51.25% 100.00%, 50.00% 99.31%, 48.75% 100.00%, 47.50% 99.31%, 46.25% 100.00%, 45.00% 99.31%, 43.75% 100.00%, 42.50% 99.31%, 41.25% 100.00%, 40.00% 99.31%, 38.75% 100.00%, 37.50% 99.31%, 36.25% 100.00%, 35.00% 99.31%, 33.75% 100.00%, 32.50% 99.31%, 31.25% 100.00%, 30.00% 99.31%, 28.75% 100.00%, 27.50% 99.31%, 26.25% 100.00%, 25.00% 99.31%, 23.75% 100.00%, 22.50% 99.31%, 21.25% 100.00%, 20.00% 99.31%, 18.75% 100.00%, 17.50% 99.31%, 16.25% 100.00%, 15.00% 99.31%, 13.75% 100.00%, 12.50% 99.31%, 11.25% 100.00%, 10.00% 99.31%, 8.75% 100.00%, 7.50% 99.31%, 6.25% 100.00%, 5.00% 99.31%, 3.75% 100.00%, 2.50% 99.31%, 1.25% 100.00%, 0.00% 99.31%);
+  position: relative; width: 300px; aspect-ratio: 960 / 1728;
+  transform: rotateY(-16deg) rotateX(5deg) rotateZ(-3deg);
+  transition: transform .6s cubic-bezier(.2, .8, .2, 1);
+  filter: drop-shadow(0 30px 34px rgba(0, 0, 0, .6)) drop-shadow(0 0 46px rgba(150, 60, 255, .38));
+}
+.nx-pack:hover { transform: rotateY(0) rotateX(0) rotateZ(0) translateY(-8px); }
+.nx-pack-img { display: block; width: 300px; height: auto; filter: drop-shadow(0 30px 34px rgba(0, 0, 0, .6)) drop-shadow(0 0 46px rgba(150, 60, 255, .38)); }
+.nx-pack-face, .nx-pack-glare { position: absolute; inset: 0; clip-path: var(--nx-pack-shape); }
+.nx-pack-face {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 10px; padding: 0 20px 19%;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, .26) 0 2px, rgba(0, 0, 0, .2) 2px 5px) top / 100% 6% no-repeat,
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, .26) 0 2px, rgba(0, 0, 0, .2) 2px 5px) bottom / 100% 6% no-repeat,
+    linear-gradient(115deg, #24202c 0%, #6c6876 16%, #dcd9e1 27%, #7a7488 38%, #2a2238 52%, #6f37c9 68%, #c9a2ff 77%, #3b1f70 89%, #171221 100%);
+}
+/* the cover art: the hero's silhouettes, between the crimps */
+.nx-pack-art { position: absolute; left: 0; right: 0; top: 6%; bottom: 6%; background: url("hero-s.webp") 50% 0 / auto 92% no-repeat; -webkit-mask-image: linear-gradient(180deg, #000 52%, transparent 78%); mask-image: linear-gradient(180deg, #000 52%, transparent 78%); opacity: .95; }
+.nx-pack-logo { position: relative; width: 100%; height: auto; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .5)); }
+.nx-pack-line { position: relative; font-family: var(--font-sans); font-weight: 700; font-size: 11px; line-height: 1; letter-spacing: .3em; text-transform: uppercase; color: var(--white); text-shadow: 0 1px 3px rgba(0, 0, 0, .6); }
+.nx-pack-count { position: relative; padding: 6px 8px 5px; background: var(--gold); color: var(--ink); font-family: var(--font-pixel); font-size: 9px; line-height: 1; }
+.nx-pack-glare { pointer-events: none; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .55) 47%, rgba(255, 255, 255, .1) 53%, transparent 60%) 150% 0 / 260% 100% no-repeat; mix-blend-mode: overlay; animation: nx-glare 6s ease-in-out infinite; }
+@keyframes nx-glare { 0%, 50% { background-position: 150% 0; } 100% { background-position: -60% 0; } }
+.nx-pack-seal { margin: 0; font-family: var(--font-sans); font-weight: 700; font-size: 15px; line-height: 1; letter-spacing: .24em; text-transform: uppercase; color: var(--on-night-soft); }
+.nx-pack-seal b { margin-left: 10px; padding: 7px 9px 6px; background: var(--gold); color: var(--ink); font-family: var(--font-pixel); font-weight: 400; font-size: 12px; letter-spacing: 0; }
+.nx-roads { margin-top: 72px; }
+.nx-roads .md-roads-links { margin-top: 22px; }
+@media (max-width: 900px) {
+  .nx-cards-grid { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+  .nx-pack, .nx-pack-img { width: 260px; }
+}
+@media (max-width: 600px) {
+  .nx-pack-facts b { font-size: 36px; }
+  .nx-pack-facts li { padding: 0 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nx-pack-glare { animation: none; }
+  .nx-pack, .nx-cta { transition: none; }
+}
+
+/* ── footer: the poster's gold platform band across the bottom ──────── */
+.md-neon .ff-footer { padding-bottom: 0; clip-path: inset(-240px 0 0 0); }   /* the brush stops at the gold band; the Oni can still stand above the edge */
+.nx-goldband { margin: 40px -40px 0; padding: 16px 40px 18px; background: var(--gold); color: var(--ink); text-align: center; }
+.nx-platforms { margin: 0; font-family: var(--font-sans); font-weight: 700; font-size: 18px; line-height: 1.3; letter-spacing: .1em; text-transform: uppercase; }
+.nx-platforms i { font-style: normal; margin: 0 18px; opacity: .55; }
+.nx-legal { margin: 6px auto 0; max-width: 130ch; font-size: 11.5px; line-height: 16px; color: rgba(13, 9, 22, .78); }
+@media (max-width: 760px) {
+  .nx-goldband { margin: 32px -18px 0; padding: 14px 18px 16px; }
+  .nx-platforms { font-size: 14px; }
+  .nx-platforms i { margin: 0 8px; }
+}
+
+/* ── the pack's countdown, at home-page size ─────────────────────────────
+   The pack (assets/pack) carries its own countdown to noon ET on Nov 17; up here,
+   right under the hero, it is the page's second headline, so it reads bigger. */
+@media (min-width: 761px) {
+  .md-neon .nx-cards .pk-count { gap: 14px; }
+  .md-neon .nx-cards .pk-count-label { font-size: 15px; color: var(--gold); }
+  .md-neon .nx-cards .pk-clock { gap: 6px; padding: 20px 24px 14px; box-shadow: inset 0 0 0 6px rgba(13, 9, 22, .9), inset 0 0 0 10px var(--violet); }
+  .md-neon .nx-cards .pk-unit { gap: 12px; }
+  .md-neon .nx-cards .pk-unit b, .md-neon .nx-cards .pk-sep { font-size: 36px; }
+  .md-neon .nx-cards .pk-unit i { font-size: 11px; }
+}
+
+/* ── Hotel Z's two residents under the partners: Mable and AZ ───────── */
+.nx-hosts-label { display: flex; align-items: center; gap: 12px; margin: 30px 0 14px; font-family: var(--font-sans); font-weight: 700; font-size: 13px; line-height: 1; letter-spacing: .26em; text-transform: uppercase; color: var(--gold); }
+.nx-hosts-label::after { content: ""; flex: 1; height: 1px; background: rgba(255, 205, 70, .28); }
+.md-neon .md-partner--host { background: linear-gradient(180deg, #3a2c16, #17111f 78%); box-shadow: inset 0 0 0 1px rgba(255, 205, 70, .3); }
+.md-partner--host em { margin-top: -4px; font-style: normal; font-size: 11px; line-height: 1; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }

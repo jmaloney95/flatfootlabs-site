@@ -1,0 +1,127 @@
+/* Pokédex page (dex.html). Builds on wot.css: same tokens, same ff- naming.
+   Layout: a search/filter bar over a list of notched entry rows; the Megas sit
+   in a night band of cards below. Type colours are the only new palette. */
+
+.ff-dex-head { grid-template-columns: minmax(0, 1fr) auto; }
+.ff-dex-note { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 18px 0 0; max-width: 60ch; font-size: 15px; line-height: 22px; color: var(--ink-soft); }
+.ff-dex-counts { display: grid; grid-template-columns: repeat(2, minmax(110px, 1fr)); gap: 10px; margin: 0; }
+.ff-dex-counts div { --n: var(--notch-sm); padding: 12px 16px; background: var(--ink); color: var(--paper); clip-path: polygon(var(--n) 0, 100% 0, 100% calc(100% - var(--n)), calc(100% - var(--n)) 100%, 0 100%, 0 var(--n)); }
+.ff-dex-counts dt { font-family: var(--font-display); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.ff-dex-counts dd { margin: 4px 0 0; font-family: var(--font-display); font-size: 40px; line-height: 1; font-variant-numeric: tabular-nums; }
+
+.ff-dex { position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; padding: 0 40px 96px; }
+.ff-dex-controls {
+  position: sticky; top: 0; z-index: 3;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px;
+  margin: 0 -12px 22px; padding: 14px 12px;
+  background: var(--paper); border-bottom: 2px solid var(--ink);
+}
+.ff-dex-controls .ff-tabs { margin: 0; gap: 6px; }
+.ff-dex-search { --n: var(--notch-sm); position: relative; display: flex; align-items: center; flex: 1 1 280px; min-width: 0; height: 46px; background: var(--ink); color: var(--paper); clip-path: polygon(var(--n) 0, 100% 0, 100% calc(100% - var(--n)), calc(100% - var(--n)) 100%, 0 100%, 0 var(--n)); }
+.ff-dex-search .ff-i { position: absolute; left: 16px; }
+.ff-dex-search input { width: 100%; height: 100%; padding: 0 16px 0 44px; border: 0; background: transparent; color: var(--paper); font: 500 17px var(--font-sans); }
+.ff-dex-search input::placeholder { color: var(--on-night-faint); }
+.ff-dex-search input:focus-visible { outline: 3px solid var(--violet-glow); outline-offset: -3px; }
+.ff-dex-kinds { display: flex; flex-wrap: wrap; gap: 6px; }
+.ff-dex-kinds button, .ff-dex-shiny {
+  height: 34px; padding: 0 12px; border: 2px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer;
+  font-family: var(--font-display); font-size: 14px; letter-spacing: .08em; text-transform: uppercase;
+}
+.ff-dex-kinds button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.ff-dex-count { margin: 0 0 0 auto; font-size: 14px; font-weight: 600; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+.ff-dex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); align-items: start; gap: 10px 14px; }
+.ff-dex-entry { --n: var(--notch-sm); container-type: inline-size; background: var(--paper-card); border-left: 4px solid var(--ink); clip-path: polygon(var(--n) 0, 100% 0, 100% calc(100% - var(--n)), calc(100% - var(--n)) 100%, 0 100%, 0 var(--n)); }
+.ff-dex-entry, .ff-dex-megacard { scroll-margin-top: 150px; }
+.ff-dex-entry[open] { border-left-color: var(--violet); box-shadow: inset 0 0 0 2px var(--ink); }
+.ff-dex-entry summary { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto 20px; align-items: center; gap: 12px; padding: 6px 14px 6px 8px; cursor: pointer; list-style: none; }
+.ff-dex-entry summary::-webkit-details-marker { display: none; }
+.ff-dex-entry summary:focus-visible { outline: 3px solid var(--violet); outline-offset: -3px; }
+.ff-dex-entry[open] summary .ff-i-plus { transform: rotate(45deg); }
+.ff-dex-icon { width: 64px; height: 64px; background: url("dex/icons.png") no-repeat; background-size: 1280px auto; image-rendering: pixelated; }
+.ff-dex-id { display: grid; gap: 4px; min-width: 0; }
+.ff-dex-num { font-family: var(--font-pixel); font-size: 10px; color: var(--ink-faint); }
+.ff-dex-name { font-family: var(--font-display); font-size: 22px; line-height: 1; text-transform: uppercase; overflow-wrap: anywhere; }
+.ff-dex-types { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.ff-dex-meta { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px; max-width: 150px; }
+.ff-dex-act { font-family: var(--font-display); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--violet); margin-right: 2px; }
+.ff-dex-src { padding: 2px 6px; border: 1.5px solid var(--line); font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); }
+.ff-dex-src[data-k="shadow"] { border-color: var(--violet); color: var(--violet); }
+.ff-dex-src[data-k="rift"] { border-color: var(--violet); background: var(--violet); color: var(--white); }
+
+.ff-dex-type { padding: 2px 7px; font-family: var(--font-display); font-size: 11px; line-height: 1.2; letter-spacing: .08em; text-transform: uppercase; color: var(--white); background: var(--tc, var(--ink)); }
+.ff-dex-type[data-t="normal"]   { --tc: #8a8a5c; }
+.ff-dex-type[data-t="fire"]     { --tc: #d5521e; }
+.ff-dex-type[data-t="water"]    { --tc: #3e6fd6; }
+.ff-dex-type[data-t="electric"] { --tc: #f2c230; color: var(--ink); }
+.ff-dex-type[data-t="grass"]    { --tc: #4c9a2e; }
+.ff-dex-type[data-t="ice"]      { --tc: #8fd6d2; color: var(--ink); }
+.ff-dex-type[data-t="fighting"] { --tc: #b0301f; }
+.ff-dex-type[data-t="poison"]   { --tc: #8a3a9e; }
+.ff-dex-type[data-t="ground"]   { --tc: #d8b25e; color: var(--ink); }
+.ff-dex-type[data-t="flying"]   { --tc: #7a72d8; }
+.ff-dex-type[data-t="psychic"]  { --tc: #de3d74; }
+.ff-dex-type[data-t="bug"]      { --tc: #a3b41f; color: var(--ink); }
+.ff-dex-type[data-t="rock"]     { --tc: #a18d37; }
+.ff-dex-type[data-t="ghost"]    { --tc: #5f4c92; }
+.ff-dex-type[data-t="dragon"]   { --tc: var(--violet-deep); }
+.ff-dex-type[data-t="dark"]     { --tc: #4f4038; }
+.ff-dex-type[data-t="steel"]    { --tc: #a7a7c4; color: var(--ink); }
+.ff-dex-type[data-t="fairy"]    { --tc: #e8a0cd; color: var(--ink); }
+
+.ff-dex-body { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 18px; padding: 4px 18px 18px 84px; }
+@container (max-width: 560px) {
+  .ff-dex-body { grid-template-columns: minmax(0, 1fr); padding: 4px 14px 16px; }
+  .ff-dex-stats { max-width: 320px; }
+}
+.ff-dex-h { margin: 6px 0 8px; font-family: var(--font-display); font-weight: 400; font-size: 15px; letter-spacing: .1em; text-transform: uppercase; color: var(--violet); }
+.ff-dex-where { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 15px; line-height: 21px; }
+.ff-dex-where li { display: flex; align-items: flex-start; gap: 8px; }
+.ff-dex-where .ff-tag { flex: none; height: 20px; padding: 0 7px; font-size: 11px; }
+.ff-dex-evo, .ff-dex-mega, .ff-dex-abil { margin: 10px 0 0; font-size: 14px; line-height: 20px; color: var(--ink-soft); }
+.ff-dex-mega { display: flex; gap: 6px; color: var(--ink); }
+.ff-dex-mega .ff-i { color: var(--violet); flex: none; margin-top: 3px; }
+.ff-dex a { color: var(--violet-deep); text-decoration-thickness: 2px; text-underline-offset: 2px; }
+
+.ff-dex-stats { display: grid; gap: 3px; align-content: start; font-variant-numeric: tabular-nums; }
+.ff-dex-stat { display: grid; grid-template-columns: 34px minmax(0, 1fr) 30px 34px; align-items: center; gap: 8px; font-size: 13px; }
+.ff-dex-stat span:first-child { font-weight: 700; color: var(--ink-faint); }
+.ff-dex-stat b { text-align: right; font-weight: 600; }
+.ff-dex-bar { position: relative; height: 7px; background: var(--line); }
+.ff-dex-bar i { position: absolute; top: 0; bottom: 0; left: 0; background: var(--ink); }
+.ff-dex-bar i.ff-dex-bar-up { background: var(--violet); }
+.ff-dex-delta { font-size: 12px; font-weight: 700; color: var(--violet); }
+.ff-dex-stat--total { margin-top: 3px; padding-top: 4px; border-top: 2px solid var(--ink); }
+
+.ff-dex-subhead { margin: 56px 0 20px; }
+.ff-dex-empty { margin: 24px 0; font-size: 17px; color: var(--ink-soft); }
+
+/* Megas: night band */
+.ff-dex-megalede { margin: 0; max-width: 46ch; font-size: 17px; line-height: 26px; color: var(--on-night-soft); }
+.ff-dex-megagrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr)); gap: 18px; }
+.ff-dex-megacard { --n: var(--notch-md); display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 20px; padding: 20px; background: var(--paper-card); color: var(--ink); }
+.ff-dex-megaart { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.ff-dex-megaart img { width: 128px; height: 128px; background: var(--paper); }
+.ff-dex-shiny { display: inline-flex; align-items: center; gap: 6px; height: 30px; font-size: 13px; }
+.ff-dex-shiny[aria-pressed="true"] { background: var(--gold); }
+.ff-dex-megainfo { display: grid; gap: 10px; min-width: 0; align-content: start; }
+.ff-dex-meganame { font-size: 34px; line-height: .95; }
+.ff-dex-megaabil, .ff-dex-flavor, .ff-dex-stone, .ff-dex-avail { margin: 0; font-size: 14px; line-height: 20px; }
+.ff-dex-megaabil b { font-family: var(--font-display); font-weight: 400; font-size: 17px; letter-spacing: .04em; text-transform: uppercase; margin-right: 6px; color: var(--violet); }
+.ff-dex-flavor { color: var(--ink-soft); }
+.ff-dex-avail { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ff-dex-avail a { color: var(--violet-deep); }
+.ff-dex-was { font-size: 12px; font-weight: 600; color: var(--ink-faint); }
+
+@media (max-width: 760px) {
+  .ff-dex { padding: 0 16px 72px; }
+  .ff-dex-head { grid-template-columns: minmax(0, 1fr); }
+  .ff-dex-counts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ff-dex-counts dd { font-size: 28px; }
+  .ff-dex-controls { position: static; }
+  .ff-dex-entry, .ff-dex-megacard { scroll-margin-top: 16px; }
+  .ff-dex-count { margin: 0; }
+  .ff-dex-entry summary { grid-template-columns: 64px minmax(0, 1fr) 20px; gap: 8px; }
+  .ff-dex-meta { display: none; }
+  .ff-dex-megacard { grid-template-columns: minmax(0, 1fr); }
+}

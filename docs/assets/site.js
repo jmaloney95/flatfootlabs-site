@@ -7,7 +7,7 @@
   /* ── the one thing to edit per release ──────────────────────────── */
   var RELEASE = {
     version: "1.2.6",
-    date: "12 August 2026"
+    date: "12 August 2026"   // shown only if the count can't load ("released ...")
   };
 
   /* ── download counter ───────────────────────────────────────────────
@@ -23,7 +23,7 @@
   var COUNTER = {
     api: "https://api.github.com/repos/jmaloney95/Wishes-Game/releases",
     asset: /\.bps$/i,
-    since: RELEASE.date,
+    since: "12 August 2026",   // the first release: the count covers every one since, so this never changes
     minDigits: 4,
     cacheKey: "wot:downloads",
     cacheMs: 10 * 60 * 1000   // be kind to the 60-requests-an-hour limit
@@ -301,7 +301,8 @@
      the link, because that is what they are for. */
   function wireTrailer() {
     var link = $("[data-trailer]");
-    if (!link) return;
+    // An empty data-trailer is a slot waiting for its video: leave the plain link.
+    if (!link || !link.getAttribute("data-trailer")) return;
     link.addEventListener("click", function (ev) {
       if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
       ev.preventDefault();
@@ -310,7 +311,7 @@
       frame.src = "https://www.youtube-nocookie.com/embed/" +
                   link.getAttribute("data-trailer") +
                   "?autoplay=1&rel=0&modestbranding=1";
-      frame.title = "Wishes of Tomorrow \u2014 official trailer";
+      frame.title = link.getAttribute("data-title") || "Wishes of Tomorrow \u2014 official trailer";
       frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
       frame.allowFullscreen = true;
 
