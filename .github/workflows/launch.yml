@@ -1,0 +1,130 @@
+# Switches the site to its after-release version at 12:00 noon Eastern on 17 November, with nobody at
+# the keyboard. The after-release files wait in a draft release ("launch-bundle") as one encrypted
+# bundle; its passphrase is the LAUNCH_KEY secret, so nothing in it can be read before the launch.
+#
+# Scheduled runs can start late or, now and then, not at all, so two are set to start well before the
+# moment. Each opens and checks the bundle, waits for the second, then commits and deploys. The second
+# one finds the first already done and stops. To launch by hand (or to try it out first):
+#   Actions → "Launch the Mega Dimension" → Run workflow → rehearse | launch
+name: Launch the Mega Dimension
+
+on:
+  schedule:
+    - cron: "15 16 17 11 *"     # 16:15 UTC, 17 Nov
+    - cron: "35 16 17 11 *"     # 16:35 UTC, 17 Nov
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "rehearse = open the bundle and keep the launched site as a download, publish nothing; launch = wait for the moment, then go live"
+        type: choice
+        options: [rehearse, launch]
+        default: rehearse
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  LAUNCH_AT: "2026-11-17T17:00:00Z"   # 12:00 noon Eastern (EST, UTC-5)
+  BUNDLE_TAG: launch-bundle
+  BUNDLE_FILE: launch-bundle.tar.gz.gpg
+
+jobs:
+  launch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Already launched?
+        id: state
+        run: |
+          mode='${{ github.event_name == 'schedule' && 'launch' || inputs.mode }}'
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          if [ "$mode" = launch ] && [ -f .github/launch/launched ]; then
+            echo "Already launched at $(cat .github/launch/launched); nothing to do."
+            echo "done=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch the sealed bundle
+        if: steps.state.outputs.done != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # drafts aren't found by tag, so look the asset up in the release list
+          url=$(gh api "repos/${{ github.repository }}/releases" \
+                --jq ".[] | select(.tag_name == \"$BUNDLE_TAG\") | .assets[] | select(.name == \"$BUNDLE_FILE\") | .url" | head -n1)
+          [ -n "$url" ] || { echo "::error::no $BUNDLE_FILE in a release tagged $BUNDLE_TAG"; exit 1; }
+          gh api -H "Accept: application/octet-stream" "$url" > "$RUNNER_TEMP/$BUNDLE_FILE"
+          ls -l "$RUNNER_TEMP/$BUNDLE_FILE"
+
+      - name: Open it onto docs/
+        if: steps.state.outputs.done != 'true'
+        env:
+          LAUNCH_KEY: ${{ secrets.LAUNCH_KEY }}
+        run: bash .github/launch/open_bundle.sh "$RUNNER_TEMP/$BUNDLE_FILE" docs
+
+      - name: Keep the rehearsal as a download
+        if: steps.state.outputs.mode == 'rehearse'
+        uses: actions/upload-artifact@v4
+        with:
+          name: launched-site
+          path: docs
+          retention-days: 7
+
+      - name: Wait for the moment
+        if: steps.state.outputs.done != 'true' && steps.state.outputs.mode == 'launch'
+        run: |
+          now=$(date -u +%s); at=$(date -u -d "$LAUNCH_AT" +%s); left=$((at - now))
+          if [ "$left" -gt 12600 ]; then
+            echo "::error::The launch is $((left / 60)) minutes away; start this within 3½ hours of it."
+            exit 1
+          fi
+          if [ "$left" -gt 0 ]; then echo "Waiting $left s for $LAUNCH_AT"; sleep "$left"; fi
+          date -u +%FT%TZ
+
+      # Going live on time comes first: if the commit can't be pushed, the deploy still happens and the
+      # last step fails loudly, so the launched files get committed by hand before anything else is pushed.
+      - name: Commit the launched site
+        id: commit
+        if: steps.state.outputs.done != 'true' && steps.state.outputs.mode == 'launch'
+        continue-on-error: true
+        run: |
+          git config user.name "Joe Maloney"
+          git config user.email "35541449+jmaloney95@users.noreply.github.com"
+          date -u +%FT%TZ > .github/launch/launched
+          git add -A docs .github/launch/launched
+          git commit -q -m "Site: the Mega Dimension is out"
+          for try in 1 2 3; do
+            git push origin HEAD:main && exit 0
+            git pull -q --rebase origin main
+          done
+          echo "::error::couldn't push the launched site"; exit 1
+
+      - uses: actions/configure-pages@v5
+        if: steps.state.outputs.done != 'true' && steps.state.outputs.mode == 'launch'
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.state.outputs.done != 'true' && steps.state.outputs.mode == 'launch'
+        with:
+          path: docs
+      - id: deployment
+        if: steps.state.outputs.done != 'true' && steps.state.outputs.mode == 'launch'
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 1200000
+
+      - name: Live but not committed?
+        if: steps.commit.outcome == 'failure'
+        run: |
+          echo "::error::The launched site is live, but its files weren't committed. Commit them before pushing anything else, or the next deploy puts the before version back."
+          exit 1
