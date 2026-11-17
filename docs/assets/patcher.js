@@ -15,9 +15,14 @@
   /* ── the one block to edit per release ──────────────────────────────
      Drop the patch in docs/patches/ and point `url` at it. If the file
      isn't there yet the UI falls back to "choose the patch you
-     downloaded" instead of showing a broken button. */
+     downloaded" instead of showing a broken button.
+     Cloudflare caches .bin files at its edge but not .bps, and uncached
+     downloads come from GitHub Pages, which slowed to a crawl at times on
+     launch day; a .bin copy of a .bps (the same bytes) downloads from the
+     cache. `name` is what the player sees. */
   var PATCH = {
     url: "patches/wishes-of-tomorrow-1.3.0.bps",
+    name: "wishes-of-tomorrow-1.3.0.bps",
     outputName: "Wishes of Tomorrow 1.3.0.gba",
     base: {
       name: "Pokémon Emerald (U)",
@@ -435,13 +440,33 @@
   // page load — a visitor who never patches never downloads it.
   function ensurePatch() {
     if (patchBytes) return Promise.resolve();
-    say("busy", "Downloading the patch…", fmtBytes(patchSize) + " — this happens once.");
+    say("busy", "Downloading the patch…", (patchSize ? fmtBytes(patchSize) + " — " : "") + "this happens once.");
     return fetch(PATCH.url).then(function (res) {
       if (!res.ok) throw PatchError("Couldn't download the patch.", "The server returned " + res.status + ".");
-      return res.arrayBuffer();
+      var total = parseInt(res.headers.get("content-length") || "0", 10) || patchSize;
+      if (!res.body || !res.body.getReader || !total) return res.arrayBuffer();
+      // Read it in pieces so a slow connection shows progress instead of a
+      // status that never changes.
+      var reader = res.body.getReader(), parts = [], got = 0, shown = 0;
+      return (function pump() {
+        return reader.read().then(function (r) {
+          if (r.done) {
+            var all = new Uint8Array(got), at = 0;
+            parts.forEach(function (p) { all.set(p, at); at += p.length; });
+            return all.buffer;
+          }
+          parts.push(r.value);
+          got += r.value.length;
+          if (got - shown > 262144 || got === total) {
+            shown = got;
+            say("busy", "Downloading the patch…", fmtBytes(got) + " of " + fmtBytes(total) + " — this happens once.");
+          }
+          return pump();
+        });
+      })();
     }).then(function (buf) {
       patchBytes = new Uint8Array(buf);
-      setSlot(ui.patchSlot, PATCH.url.split("/").pop(), fmtBytes(patchBytes.length) + " · downloaded", true);
+      setSlot(ui.patchSlot, PATCH.name, fmtBytes(patchBytes.length) + " · downloaded", true);
     });
   }
 
@@ -880,11 +905,15 @@
 
     // Only ask whether the patch exists and how big it is — a HEAD request,
     // not the file itself. The bytes come down when the player presses Apply.
-    fetch(PATCH.url, { method: "HEAD" }).then(function (res) {
-      if (!res.ok) throw new Error(String(res.status));
+    // no-store: a cached HEAD waits behind any download of the same file
+    // still in progress (another tab), which left the page on "Loading".
+    // If the server is slow to answer, carry on without the size.
+    var slow = new Promise(function (resolve) { setTimeout(function () { resolve(null); }, 6000); });
+    Promise.race([fetch(PATCH.url, { method: "HEAD", cache: "no-store" }), slow]).then(function (res) {
+      if (res && !res.ok) throw new Error(String(res.status));
       patchAvailable = true;
-      patchSize = parseInt(res.headers.get("content-length") || "0", 10);
-      patchName = PATCH.url.split("/").pop();
+      patchSize = res ? parseInt(res.headers.get("content-length") || "0", 10) : 0;
+      patchName = PATCH.name;
       setSlot(ui.patchSlot, patchName,
         (patchSize ? fmtBytes(patchSize) + " · " : "") + "downloads when you patch", true);
       root.dataset.patchReady = "1";
