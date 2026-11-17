@@ -323,11 +323,14 @@
   var pendingSave = null;
 
   /* ── in-browser player ──────────────────────────────────────────────
-     EmulatorJS (mGBA core) loaded on demand from its CDN. The patched ROM
-     is handed over as a blob made from the bytes already in memory, so
-     nothing is re-downloaded and the ROM still never leaves the browser. */
+     EmulatorJS 4.2.3 (mGBA core), loaded on demand from this site's own
+     copy in assets/emulatorjs/ (GPL-3.0, see the LICENSE there). Its CDN
+     stopped serving pages on other sites, so the files live here now.
+     The patched ROM is handed over as a blob made from the bytes already
+     in memory, so nothing is re-downloaded and the ROM never leaves the
+     browser. */
   var PLAYER = {
-    data: "https://cdn.emulatorjs.org/stable/data/",
+    data: "assets/emulatorjs/",
     core: "gba"
   };
 
@@ -593,7 +596,7 @@
       btn.disabled = false;
       btn.textContent = btn === ui.play ? "Play in browser" : "Play";
       say("bad", "Couldn't load the emulator.",
-        "The player is fetched from the EmulatorJS CDN — check your connection or any blockers. Your patched ROM is still ready to save.");
+        "The player didn't download — check your connection, or reload the page and press Play again. Your patched ROM is still ready to save.");
     };
     document.body.appendChild(s);
   }
