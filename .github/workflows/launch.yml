@@ -41,7 +41,7 @@ env:
   GAME_REPO: jmaloney95/Wishes-Game
   GAME_TAG: v1.3.0
   GAME_BASE: dca6820550a4bf563e54616a543af17dac4efcac   # the game repo's master before the release (v1.2.6)
-  GAME_SHA: 21347042e1b4dc9d220a18f0ce6bd4c9e4de71f9    # the v1.3.0 commit, sealed in GAME_BUNDLE
+  GAME_SHA: bbe41fdba462f2066bec57eafc7cd795f7c0731d    # the v1.3.0 commit, sealed in GAME_BUNDLE
   GAME_BUNDLE: game-v1.3.0.bundle.gpg
   GAME_ASSET: wishes-of-tomorrow-1.3.0.bps
 
