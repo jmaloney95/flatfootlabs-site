@@ -440,11 +440,13 @@
   // page load — a visitor who never patches never downloads it.
   function ensurePatch() {
     if (patchBytes) return Promise.resolve();
-    say("busy", "Downloading the patch…", (patchSize ? fmtBytes(patchSize) + " — " : "") + "this happens once.");
+    say("busy", "Downloading the patch…", "This happens once.");
     return fetch(PATCH.url).then(function (res) {
       if (!res.ok) throw PatchError("Couldn't download the patch.", "The server returned " + res.status + ".");
-      var total = parseInt(res.headers.get("content-length") || "0", 10) || patchSize;
-      if (!res.body || !res.body.getReader || !total) return res.arrayBuffer();
+      // A compressed transfer's length isn't the patch's size, so then the
+      // progress counts up without a total.
+      var total = res.headers.get("content-encoding") ? 0 : parseInt(res.headers.get("content-length") || "0", 10);
+      if (!res.body || !res.body.getReader) return res.arrayBuffer();
       // Read it in pieces so a slow connection shows progress instead of a
       // status that never changes.
       var reader = res.body.getReader(), parts = [], got = 0, shown = 0;
@@ -457,9 +459,10 @@
           }
           parts.push(r.value);
           got += r.value.length;
-          if (got - shown > 262144 || got === total) {
+          if (got - shown > 262144) {
             shown = got;
-            say("busy", "Downloading the patch…", fmtBytes(got) + " of " + fmtBytes(total) + " — this happens once.");
+            say("busy", "Downloading the patch…",
+              (total ? fmtBytes(got) + " of " + fmtBytes(total) : fmtBytes(got) + " so far") + " — this happens once.");
           }
           return pump();
         });
@@ -912,7 +915,8 @@
     Promise.race([fetch(PATCH.url, { method: "HEAD", cache: "no-store" }), slow]).then(function (res) {
       if (res && !res.ok) throw new Error(String(res.status));
       patchAvailable = true;
-      patchSize = res ? parseInt(res.headers.get("content-length") || "0", 10) : 0;
+      // (a compressed answer's length is not the patch's size)
+      patchSize = res && !res.headers.get("content-encoding") ? parseInt(res.headers.get("content-length") || "0", 10) : 0;
       patchName = PATCH.name;
       setSlot(ui.patchSlot, patchName,
         (patchSize ? fmtBytes(patchSize) + " · " : "") + "downloads when you patch", true);
