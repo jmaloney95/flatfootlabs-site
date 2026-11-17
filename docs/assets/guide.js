@@ -62,7 +62,10 @@
   function render(i, navigated) {
     var m = MAPS[i];
     var inAct = MAPS.filter(function (x) { return x.act === m.act; });
-    kicker.textContent = "Field guide · Act " + m.act + " · Map " + (inAct.indexOf(m) + 1) + " of " + inAct.length;
+    // Acts are numbered; the Mega Dimension chapter ("md") has a name instead.
+    var actName = m.act === "md" ? "Mega Dimension" : "Act " + m.act;
+    kicker.textContent = "Field guide · " + actName + " · Map " + (inAct.indexOf(m) + 1) + " of " + inAct.length;
+    fig.classList.toggle("is-md", m.act === "md");
 
     // The map's name in two colours: the last word in violet, like every headline.
     var words = m.name.split(" ");

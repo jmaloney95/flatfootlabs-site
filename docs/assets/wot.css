@@ -810,5 +810,3 @@ html.has-fs-player, html.has-fs-player body { overflow: hidden; }
    new page and can come off once the update has been out a while. */
 .ff-nav-new { display: inline-block; margin-left: 7px; padding: 3px 4px 2px; vertical-align: 2px; background: var(--gold); color: var(--ink); font-family: var(--font-pixel); font-size: 8px; line-height: 1; letter-spacing: 0; }
 
-/* ── field guide: the Mega Dimension chapter's pins (guide.js marks its maps .is-md) ── */
-.ff-mapfig.is-md .ff-pin { background: var(--ink); color: var(--gold); box-shadow: 0 0 0 2px var(--gold), 3px 3px 0 2px var(--violet); }

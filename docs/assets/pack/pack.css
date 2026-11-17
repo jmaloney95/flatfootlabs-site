@@ -80,23 +80,174 @@
 .pk.is-gl .pk-shake { visibility: hidden; }
 .pk.is-gl .pk-sweep { animation: none; }
 
-/* ready to open (the drop has passed): the pack breathes violet light; the opening's effects play on a
-   full-screen layer above everything */
-.pk.is-ready:not(.is-opening) .pk-gl, .pk.is-ready:not(.is-opening):not(.is-gl) .pk-img { animation: pk-ready 1.8s ease-in-out infinite; }
+/* ready to open (the drop has passed): the pack breathes violet light */
+.pk.is-ready:not(.is-opening):not(.is-tearing) .pk-gl, .pk.is-ready:not(.is-opening):not(.is-gl) .pk-img { animation: pk-ready 1.8s ease-in-out infinite; }
 @keyframes pk-ready {
   0%, 100% { filter: drop-shadow(0 30px 34px rgba(0, 0, 0, .62)) drop-shadow(0 0 40px rgba(150, 60, 255, .34)); }
   50%      { filter: drop-shadow(0 30px 34px rgba(0, 0, 0, .62)) drop-shadow(0 0 70px rgba(196, 104, 255, .8)); }
 }
-.pk.is-opening .pk-pack { cursor: default; z-index: 5; }
-.pk.is-opening .pk-count, .pk.is-opening .pk-hint, .pk.is-opening .pk-skip { opacity: 0; transition: opacity .25s; }
-.pk-fx { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 2147483000; pointer-events: none; }
-.pk-skip {
-  margin: -8px 0 0; padding: 8px 12px; border: 0; background: none; cursor: pointer;
-  font-family: var(--font-sans); font-weight: 700; font-size: 13px; line-height: 1; letter-spacing: .2em; text-transform: uppercase;
-  color: var(--gold); text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 2px;
+/* the countdown reaches zero on an open page: a soft flash as the Megas light up */
+.pk.is-ready.is-waking:not(.is-opening):not(.is-tearing) .pk-gl { animation: pk-wake 1s ease-out both; }
+@keyframes pk-wake {
+  0%   { filter: drop-shadow(0 30px 34px rgba(0, 0, 0, .62)) drop-shadow(0 0 40px rgba(150, 60, 255, .34)) brightness(1); }
+  14%  { filter: drop-shadow(0 30px 34px rgba(0, 0, 0, .62)) drop-shadow(0 0 90px rgba(226, 200, 255, .95)) brightness(1.9); }
+  100% { filter: drop-shadow(0 30px 34px rgba(0, 0, 0, .62)) drop-shadow(0 0 40px rgba(150, 60, 255, .34)) brightness(1); }
 }
-.pk-skip:hover { color: var(--white); }
-.pk-skip:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+.pk.is-opening .pk-pack { cursor: default; z-index: 5; }
+.pk.is-opening .pk-count, .pk.is-opening .pk-hint { opacity: 0; transition: opacity .25s; }
+/* twinkles (pack.js draws the cards' own four-point glints on a canvas the size of the screen) */
+.pk-sparks { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 2; }
+.pk-sparks--page { z-index: 2147482900; }
+/* under a ready pack: the visitor's binder, and how many packs everyone has opened */
+.pk-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 22px; margin-top: -6px; }
+.pk-opened { font-family: var(--font-sans); font-weight: 700; font-size: 13px; line-height: 1; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+.pk.is-opening .pk-links, .pk.is-tearing .pk-links { opacity: 0; transition: opacity .25s; }
+.pk-binder-link {
+  display: inline-flex; align-items: center; gap: 10px; padding: 9px 14px 8px;
+  font-family: var(--font-sans); font-weight: 700; font-size: 13px; line-height: 1; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--white); text-decoration: none; background: rgba(13, 9, 22, .9); box-shadow: inset 0 0 0 2px var(--violet);
+}
+.pk-binder-link b { font-family: var(--font-pixel); font-weight: 400; font-size: 11px; letter-spacing: 0; color: var(--gold); }
+.pk-binder-link:hover { background: var(--violet); }
+.pk-binder-link:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+
+/* focus: a tap lifts the ready pack to the middle of the screen, over the page blurred behind a violet glow
+   (pack.js moves the pack into .pk-focus-slot and fades the rest in with --pk-f) */
+.pk-focus { position: fixed; inset: 0; z-index: 2147481000; color: var(--on-night); --pk-f: 0; }
+.pk-focus-back {
+  position: absolute; inset: 0; opacity: var(--pk-f); background: rgba(10, 7, 16, .5);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15); backdrop-filter: blur(14px) saturate(1.15);
+}
+.pk-focus-glow {
+  position: absolute; left: var(--pk-gx, 50%); top: var(--pk-gy, 50%); width: 820px; height: 980px; margin: -490px 0 0 -410px;
+  pointer-events: none; opacity: var(--pk-f);
+  background: radial-gradient(closest-side, rgba(206, 130, 255, .5), rgba(118, 20, 216, .3) 42%, rgba(118, 20, 216, .1) 70%, rgba(118, 20, 216, 0));
+  animation: pk-focus-glow 3.4s ease-in-out infinite;
+}
+@keyframes pk-focus-glow { 50% { transform: scale(1.07); filter: brightness(1.18); } }
+/* isolation: without its own stacking context the pack's layers stop Chrome blurring the page behind it */
+.pk-focus-slot { position: absolute; display: block; gap: 0; transform-origin: 0 0; isolation: isolate; }
+.pk-focus-slot .pk-pack { touch-action: none; }
+.pk-focus-hint {
+  position: absolute; left: 16px; right: 16px; top: var(--pk-hint-y, 80%); margin: 0; pointer-events: none; text-align: center;
+  font-family: var(--font-pixel); font-size: 10px; line-height: 14px; color: var(--on-night-soft); opacity: var(--pk-f); transition: opacity .2s;
+}
+.pk-focus-slot.is-tearing ~ .pk-focus-hint, .pk-focus-slot.is-opening ~ .pk-focus-hint { opacity: 0; }
+.pk-hold { display: block; max-width: 100%; }
+/* the corner tools of the focus and of the reveal: sound on/off and close */
+.pk-focus-tools, .pk-stage-tools { position: absolute; top: 14px; right: 14px; display: flex; align-items: center; gap: 8px; }
+.pk-focus-tools { opacity: var(--pk-f); }
+.pk-focus-close, .pk-stage-close {
+  width: 44px; height: 44px; padding: 0; border: 0; cursor: pointer;
+  background: rgba(13, 9, 22, .8); color: var(--white); font: 400 28px/44px var(--font-sans); box-shadow: inset 0 0 0 2px var(--night-line);
+}
+.pk-sound {
+  display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px; border: 0; cursor: pointer;
+  background: rgba(13, 9, 22, .8); color: var(--white); box-shadow: inset 0 0 0 2px var(--night-line);
+  font-family: var(--font-sans); font-weight: 700; font-size: 12px; line-height: 1; letter-spacing: .2em; text-transform: uppercase;
+}
+.pk-sound-icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pk-sound-icon path:first-child { fill: currentColor; stroke: none; }
+.pk-sound[aria-pressed="true"] .pk-sound-off, .pk-sound[aria-pressed="false"] .pk-sound-on { display: none; }
+.pk-sound[aria-pressed="false"] { color: var(--on-night-faint); }
+.pk-focus-close:hover, .pk-stage-close:hover, .pk-sound:hover { background: var(--violet); color: var(--white); }
+.pk-focus-close:focus-visible, .pk-stage-close:focus-visible, .pk-sound:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+@media (max-width: 480px) { .pk-sound span { display: none; } .pk-sound { padding: 0 12px; } }
+
+/* where to swipe (in focus): a dashed line along the tear with a light running across it */
+.pk-focus-slot.pk.is-ready.is-gl:not(.is-opening):not(.is-tearing) .pk-pack::after {
+  content: ""; position: absolute; left: 9%; right: 9%; top: 7.6%; height: 0; pointer-events: none; z-index: 2;
+  border-top: 2px dashed rgba(255, 255, 255, .5);
+  -webkit-mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+          mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.pk-focus-slot.pk.is-ready.is-gl:not(.is-opening):not(.is-tearing) .pk-pack::before {
+  content: ""; position: absolute; left: 9%; top: calc(7.6% - 5px); width: 12px; height: 12px; border-radius: 50%; pointer-events: none; z-index: 3;
+  background: #fff; box-shadow: 0 0 10px 3px rgba(206, 170, 255, .9), 0 0 24px 8px rgba(150, 60, 255, .55);
+  animation: pk-swipe 2.4s cubic-bezier(.45, 0, .25, 1) .6s infinite;
+}
+@keyframes pk-swipe {
+  0%   { transform: translateX(0); opacity: 0; }
+  12%  { opacity: 1; }
+  62%  { transform: translateX(var(--pk-run, 240px)); opacity: 1; }
+  72%, 100% { transform: translateX(var(--pk-run, 240px)); opacity: 0; }
+}
+.pk-pack { --pk-run: 250px; }
+@media (max-width: 359px) { .pk-pack { --pk-run: 185px; } }
+
+/* the card inside the pack, behind the pack's canvas: the body hides it until it rises */
+.pk-card {
+  position: absolute; left: 50%; top: 50%; display: block; max-width: none; pointer-events: none;
+  filter: drop-shadow(0 0 calc(var(--pk-glow, 0) * 26px) var(--pk-gc, #c49cff)) brightness(calc(1 + var(--pk-glow, 0) * .3));
+}
+/* the card out of the pack, travelling to the reveal: straight, face on */
+.pk-fly {
+  position: fixed; z-index: 2147482500; display: block; max-width: none; pointer-events: none; transform-origin: 0 0;
+  filter: drop-shadow(0 24px 40px rgba(0, 0, 0, .55));
+}
+
+/* the reveal: the card on the night with its own colour behind it, and what it is. pack.js fades it in behind
+   the flying card and plays the rarity's light when the card lands. */
+.pk-stage { position: fixed; inset: 0; z-index: 2147482000; color: var(--on-night); }
+.pk-stage.is-arriving .pk-stage-card { visibility: hidden; }
+.pk-stage.is-arriving .pk-stage-info, .pk-stage.is-arriving .pk-stage-tools { opacity: 0; pointer-events: none; }
+.pk-stage.is-closing { animation: pk-stage-out .2s ease-in both; }
+@keyframes pk-stage-out { to { opacity: 0; } }
+/* the secret rares' flash: a bloom of light from the card out over the screen, in the card's own colour */
+.pk-stage-blink {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle at var(--pk-cx, 50%) var(--pk-cy, 50%), rgba(255, 255, 255, .95), rgba(var(--pk-tint, 255, 190, 120), .5) 24%, rgba(var(--pk-tint, 255, 190, 120), 0) 62%);
+}
+/* on the card: a flash, and a glint crossing the face */
+.pk-stage-flash, .pk-stage-shine { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+.pk-stage-flash { opacity: 0; mix-blend-mode: screen; background: radial-gradient(ellipse 75% 65% at 50% 45%, #fff, rgba(255, 255, 255, .55) 55%, rgba(255, 255, 255, .2)); }
+.pk-stage-shine { overflow: hidden; }
+.pk-stage-glint {
+  position: absolute; top: -12%; bottom: -12%; left: -60%; width: 34%; opacity: 0; mix-blend-mode: screen; transform: skewX(-16deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .16) 30%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .16) 70%, transparent);
+}
+.pk-stage-back {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 55% at 50% 46%, var(--pk-card-glow, #7614d8), transparent 70%), rgba(10, 7, 16, .96);
+  background: radial-gradient(ellipse 60% 55% at 50% 46%, color-mix(in srgb, var(--pk-card-glow, #7614d8) 70%, transparent), transparent 70%), rgba(10, 7, 16, .96);
+}
+.pk-stage-card { position: absolute; border-radius: 3.9% / 2.8%; transition: transform .3s cubic-bezier(.2, .7, .3, 1); will-change: transform; }
+.pk-stage-card.is-tilted { transition: transform .08s linear; }
+.pk-stage-card img { display: block; width: 100%; height: 100%; filter: drop-shadow(0 28px 44px rgba(0, 0, 0, .6)); }
+.pk-stage-card::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s;
+  background: radial-gradient(circle at var(--pk-lx, 50%) var(--pk-ly, 40%), rgba(255, 255, 255, .5), rgba(220, 200, 255, .12) 35%, transparent 60%);
+  mix-blend-mode: screen;
+}
+.pk-stage-card.is-tilted::after { opacity: 1; }
+.pk-stage-info { position: absolute; max-width: 400px; transform: translateY(calc(-50% + var(--pk-in, 0px))); display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.pk-stage.is-narrow .pk-stage-info { max-width: none; transform: translateY(var(--pk-in, 0px)); align-items: center; text-align: center; gap: 8px; }
+.pk-stage-tag { font-family: var(--font-sans); font-weight: 700; font-size: 13px; line-height: 1; letter-spacing: .24em; text-transform: uppercase; color: var(--violet-glow, #c49cff); }
+.pk-stage--rare .pk-stage-tag { color: var(--gold); }
+.pk-stage--secret .pk-stage-tag { color: #ff8a3d; }
+/* a duplicate's count, in the binder's own ×N chip */
+.pk-stage-dupe { display: inline-block; margin-left: 4px; padding: 4px 5px 3px; background: var(--gold); color: var(--ink, #14101e); font-family: var(--font-pixel); font-weight: 400; font-size: 10px; line-height: 1; letter-spacing: 0; vertical-align: 1px; }
+.pk-stage-name { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(34px, 5vw, 56px); line-height: 1; text-transform: uppercase; color: var(--white); }
+.pk-stage-meta, .pk-stage-count { margin: 0; font-family: var(--font-sans); font-weight: 600; font-size: 16px; line-height: 1.3; color: var(--on-night-soft); }
+.pk-stage-count b { font-family: var(--font-pixel); font-weight: 400; font-size: 13px; color: var(--gold); }
+.pk-stage-btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+.pk-stage.is-narrow .pk-stage-btns { justify-content: center; margin-top: 4px; }
+/* the card's Mystery Code: a ticket strip with the letters in the pixel face (monospace) and a copy button */
+.pk-code { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 4px; padding: 10px 10px 10px 14px; border: 1px solid rgba(255, 205, 70, .45); background: rgba(255, 205, 70, .07); }
+.pk-code-label { font-family: var(--font-sans); font-weight: 700; font-size: 11px; line-height: 1; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+.pk-code-value { font-family: var(--font-pixel); font-size: 16px; line-height: 1; letter-spacing: .14em; color: var(--white, #fff); -webkit-user-select: all; user-select: all; }
+.pk-code-copy { min-height: 32px; padding: 0 12px; border: 0; background: var(--gold); color: var(--ink, #14101e); font-family: var(--font-sans); font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
+.pk-code-copy:hover { background: #ffe08a; }
+.pk-code-copy:focus-visible { outline: 2px solid var(--white, #fff); outline-offset: 2px; }
+.pk-code-said { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.pk-code-note { margin: -4px 0 0; max-width: 400px; font-family: var(--font-sans); font-weight: 500; font-size: 13px; line-height: 1.4; color: var(--on-night-soft); }
+.pk-stage.is-narrow .pk-code { justify-content: center; padding: 8px 10px; gap: 6px 12px; }
+.pk-stage.is-narrow .pk-code-label { flex-basis: 100%; text-align: center; }
+.pk-stage.is-narrow .pk-code-note { margin-top: -2px; font-size: 12px; }
+@media (max-width: 719px) {
+  .pk-stage-name { font-size: 34px; }
+  .pk-stage-meta, .pk-stage-count { font-size: 14px; }
+}
 
 /* the countdown, in the poster's rift-clock chip */
 .pk-count { display: flex; flex-direction: column; align-items: center; gap: 12px; }
@@ -127,5 +278,8 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .pk-sweep, .pk-shake.is-shaking, .pk-shake.is-shaking .pk-sheen,
-  .pk.is-ready:not(.is-opening) .pk-gl, .pk.is-ready:not(.is-opening):not(.is-gl) .pk-img { animation: none; }
+  .pk.is-ready:not(.is-opening):not(.is-tearing) .pk-gl, .pk.is-ready:not(.is-opening):not(.is-gl) .pk-img,
+  .pk-focus-slot.pk.is-ready.is-gl:not(.is-opening):not(.is-tearing) .pk-pack::before, .pk-stage.is-closing, .pk-focus-glow,
+  .pk.is-ready.is-waking:not(.is-opening):not(.is-tearing) .pk-gl { animation: none; }
+  .pk-stage-card { transition: none; }
 }

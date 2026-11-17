@@ -1,0 +1,169 @@
+{
+ "sounds": {
+  "tear-1": {
+   "src": "pack/sfx/tear-1.mp3",
+   "gain": 0.62
+  },
+  "tear-2": {
+   "src": "pack/sfx/tear-2.mp3",
+   "gain": 0.62
+  },
+  "crinkle-1": {
+   "src": "pack/sfx/crinkle-1.mp3",
+   "gain": 1
+  },
+  "crinkle-2": {
+   "src": "pack/sfx/crinkle-2.mp3",
+   "gain": 1
+  },
+  "crinkle-3": {
+   "src": "pack/sfx/crinkle-3.mp3",
+   "gain": 1
+  },
+  "whoosh": {
+   "src": "pack/sfx/whoosh.mp3",
+   "gain": 1
+  },
+  "land": {
+   "src": "pack/sfx/land.mp3",
+   "gain": 1
+  },
+  "wake": {
+   "src": "pack/sfx/wake.mp3",
+   "gain": 1
+  },
+  "slide-1": {
+   "src": "cards/sfx/slide-1.mp3",
+   "gain": 1
+  },
+  "slide-2": {
+   "src": "cards/sfx/slide-2.mp3",
+   "gain": 1
+  },
+  "slide-3": {
+   "src": "cards/sfx/slide-3.mp3",
+   "gain": 1
+  },
+  "slide-4": {
+   "src": "cards/sfx/slide-4.mp3",
+   "gain": 1
+  },
+  "slide-5": {
+   "src": "cards/sfx/slide-5.mp3",
+   "gain": 1
+  },
+  "slide-6": {
+   "src": "cards/sfx/slide-6.mp3",
+   "gain": 1
+  },
+  "s1-swell": {
+   "src": "pack/sfx/s1-swell.mp3",
+   "gain": 1
+  },
+  "s1-hit": {
+   "src": "pack/sfx/s1-hit.mp3",
+   "gain": 1
+  },
+  "s2-build": {
+   "src": "pack/sfx/s2-build.mp3",
+   "gain": 1
+  },
+  "s2-hit": {
+   "src": "pack/sfx/s2-hit.mp3",
+   "gain": 1
+  },
+  "s3-build": {
+   "src": "pack/sfx/s3-build.mp3",
+   "gain": 1
+  },
+  "s3-hit": {
+   "src": "pack/sfx/s3-hit.mp3",
+   "gain": 1
+  },
+  "s4-tell": {
+   "src": "pack/sfx/s4-tell.mp3",
+   "gain": 1
+  },
+  "s4-build": {
+   "src": "pack/sfx/s4-build.mp3",
+   "gain": 1
+  },
+  "s4-hit": {
+   "src": "pack/sfx/s4-hit.mp3",
+   "gain": 1
+  }
+ },
+ "cues": {
+  "1": {
+   "out": [
+    {
+     "s": "s1-swell",
+     "end": "land"
+    }
+   ],
+   "land": [
+    {
+     "s": "s1-hit"
+    }
+   ]
+  },
+  "2": {
+   "pull": [
+    {
+     "s": "s2-build",
+     "end": "land"
+    }
+   ],
+   "land": [
+    {
+     "s": "s2-hit"
+    }
+   ]
+  },
+  "3": {
+   "rise": [
+    {
+     "s": "s3-build",
+     "end": "land"
+    }
+   ],
+   "out": [
+    {
+     "s": "s1-swell",
+     "end": "land",
+     "gain": 0.6
+    }
+   ],
+   "land": [
+    {
+     "s": "s3-hit"
+    }
+   ]
+  },
+  "4": {
+   "free": [
+    {
+     "s": "s4-tell"
+    },
+    {
+     "s": "s4-build",
+     "end": "land",
+     "delay": -0.1
+    }
+   ],
+   "out": [
+    {
+     "s": "s1-swell",
+     "end": "land",
+     "delay": -0.1,
+     "gain": 0.7
+    }
+   ],
+   "land": [
+    {
+     "s": "s4-hit"
+    }
+   ]
+  }
+ }
+}

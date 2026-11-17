@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Mega Dimension — Pokémon Wishes of Tomorrow</title>
-<meta name="description" content="A free update for Pokémon Wishes of Tomorrow, out November 17. Rifts open at 8:00 every morning; beyond each one is the world drained of colour, a rogue Mega Evolution, and two minutes to claim it. 23 new Megas, 6 partners who fight beside you, Shiny Shadow Pokémon.">
+<meta name="description" content="A free update for Pokémon Wishes of Tomorrow, out now. Rifts open at 8:00 every morning; beyond each one is the world drained of colour, a rogue Mega Evolution, and two minutes to claim it. 23 new Megas, 6 partners who fight beside you, Shiny Shadow Pokémon.">
 <meta name="theme-color" content="#0d0916">
 <link rel="icon" href="assets/art/battle-sprite.png" type="image/png">
 <link rel="canonical" href="https://flatfootlabs.com/">
@@ -14,20 +14,20 @@
 <meta property="og:site_name" content="Flatfoot Games">
 <meta property="og:url" content="https://flatfootlabs.com/">
 <meta property="og:title" content="The Mega Dimension">
-<meta property="og:description" content="Two minutes. No colour. One Mega. A free update for Pokémon Wishes of Tomorrow, out November 17.">
-<meta property="og:image" content="https://flatfootlabs.com/assets/md/og-mega-dimension.jpg">
+<meta property="og:description" content="Two minutes. No colour. One Mega. A free update for Pokémon Wishes of Tomorrow, out now.">
+<meta property="og:image" content="https://flatfootlabs.com/assets/md/og-mega-dimension-out.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="640">
-<meta property="og:image:alt" content="The Mega Dimension: a free update for Wishes of Tomorrow, out November 17.">
+<meta property="og:image:alt" content="The Mega Dimension: a free update for Wishes of Tomorrow, out now.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://flatfootlabs.com/assets/md/og-mega-dimension.jpg">
+<meta name="twitter:image" content="https://flatfootlabs.com/assets/md/og-mega-dimension-out.jpg">
 
 <!-- Old links into the game page (flatfootlabs.com/#downloads and so on) still land
      where they used to: the game has its own page now, at /game. -->
 <script>
 (function () {
-  var moved = ["downloads", "patch", "media", "inside", "guide", "changelog", "requirements", "credits", "faq", "play", "mega-dimension"];
+  var moved = ["media", "inside", "guide", "changelog", "requirements", "credits", "faq", "play", "mega-dimension"];
   var id = location.hash.slice(1);
   if (moved.indexOf(id) > -1) location.replace("game#" + id);
 })();
@@ -36,23 +36,23 @@
 <!-- Fonts are self-hosted (assets/fonts). Assets carry a version query: bump
      the stamp whenever anything in assets/ changes. -->
 <link rel="preload" href="assets/fonts/Anton-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/wot.css?v=20261109a">
-<link rel="stylesheet" href="assets/md/md.css?v=20261109a">
-<link rel="stylesheet" href="assets/md/neon.css?v=20261109a">
-<link rel="stylesheet" href="assets/pack/pack.css?v=20261113a">
+<link rel="stylesheet" href="assets/wot.css?v=20261117a">
+<link rel="stylesheet" href="assets/md/md.css?v=20261117a">
+<link rel="stylesheet" href="assets/md/neon-launch.css?v=20261117a">
+<link rel="stylesheet" href="assets/pack/pack.css?v=20261116c">
 </head>
 <body class="md-neon">
 
 <a class="ff-skip" href="#hero-title">Skip to content</a>
 
 <!-- The drop strip: the release date across the top (styles in md/md.css and md/neon.css). -->
-<div class="md-drop"><span>The Mega Dimension<span class="md-drop-more"> <span class="md-drop-dot">·</span> free update</span> <span class="md-drop-dot">·</span> drops <b class="md-drop-date">Nov 17 · 12 PM ET</b></span></div>
+<div class="md-drop"><span>The Mega Dimension<span class="md-drop-more"> <span class="md-drop-dot">·</span> free update</span> <span class="md-drop-dot">·</span> <b class="md-drop-date">Out now</b></span></div>
 
 <main>
 <!-- The top of the page is the key-art poster opened up for a screen. The art is a plate
      (assets/md/hero-l|m|s|p.webp, one per screen size) with no type on it; everything written
-     over it is HTML. The plates are shown at 1:1 so the Megas stay on whole pixels. Until the
-     update is out they are silhouettes. -->
+     over it is HTML. The plates are shown at 1:1 so the Megas stay on whole pixels. After the
+     release they are lit. -->
 <div class="nx-top" id="top">
   <header class="ff-header">
     <a class="ff-logo" href="./">
@@ -67,7 +67,7 @@
     </nav>
     <div class="ff-header-actions">
       <a class="ff-iconbtn" href="labs" title="Flatfoot Labs"><i class="ff-i ff-i-flask" aria-hidden="true"></i><span class="ff-sr">Flatfoot Labs</span></a>
-      <a class="ff-btn ff-btn--violet ff-btn--sm" href="game#downloads">Download<i class="ff-i ff-i-arrow" aria-hidden="true"></i></a>
+      <a class="ff-btn ff-btn--violet ff-btn--sm" href="#downloads">Download<i class="ff-i ff-i-arrow" aria-hidden="true"></i></a>
     </div>
   </header>
 
@@ -84,8 +84,8 @@
       <h1 class="ff-sr" id="hero-title">Pokémon Wishes of Tomorrow: The Mega Dimension</h1>
       <img class="nx-logo" src="assets/md/lockup-wot.webp" width="1200" height="756" alt="">
       <p class="nx-edition"><span>GBA ROM hack</span><b>Free update</b></p>
-      <a class="nx-cta" href="#update"><span>Play free</span><i aria-hidden="true">·</i><span>Nov 17</span></a>
-      <a class="nx-watch" href="#trailer">Watch the teaser<i class="ff-i ff-i-play" aria-hidden="true"></i></a>
+      <a class="nx-cta" href="#downloads"><span>Play free</span><i aria-hidden="true">·</i><span>Out now</span></a>
+      <a class="nx-watch" href="#trailer">Watch the trailer<i class="ff-i ff-i-play" aria-hidden="true"></i></a>
       <span class="nx-studio"><svg viewBox="0 0 3 3" width="24" height="24" aria-hidden="true"><path d="M0 0h1v1H0zM2 0h1v1H2zM1 1h1v1H1zM0 2h1v1H0zM1 2h1v1H1z" fill="currentColor"/></svg>Flatfoot Labs</span>
     </div>
 
@@ -100,14 +100,14 @@
 
 <!-- The card set. Until the update is out the cards stay sealed in the booster pack
      (assets/pack: pack.css, pack.js, img/): it tilts, shakes on a tap, and counts down to
-     data-drop. Its Megas are silhouettes until the drop; after it, the pack opens onto the
-     card carousel kept in <template id="cards-reveal"> below. -->
+     data-drop. Its Megas are silhouettes until the drop; after it, it opens, one card a pack;
+     the set itself is never shown (pulled cards go to the binder; the Pokédex has their stats). -->
 <section class="ff-night ff-band nx-band nx-cards" id="cards" aria-labelledby="cards-title">
   <div class="ff-wrap nx-cards-grid">
     <div class="nx-cards-copy">
       <span class="ff-kicker">Mega Evolution · the card set</span>
       <h2 class="ff-display ff-h2" id="cards-title">Hunt down <em class="ff-line">rogue Megas.</em></h2>
-      <p class="ff-lede">All 28 Megas in the update as full-art cards, with the game's own numbers on every one. The pack opens when the rifts do.</p>
+      <p class="ff-lede">All 28 Megas in the update as full-art cards, with the game's own numbers on every one. The rifts are open, and so is the pack.</p>
       <ul class="nx-pack-facts">
         <li><b>30</b><span>cards</span></li>
         <li><b>28</b><span>Megas</span></li>
@@ -116,7 +116,7 @@
       <p class="nx-pack-credit">Illus. CDRX73</p>
     </div>
     <div class="nx-pack-stage">
-      <div class="pk" data-pack data-drop="2026-11-17T12:00:00-05:00">
+      <div class="pk" data-pack data-open data-drop="2026-11-17T12:00:00-05:00">
         <button class="pk-pack" type="button" data-pack-btn aria-label="The sealed Mega Dimension booster pack. Press to shake it.">
           <span class="pk-shake" data-pack-shake>
             <span class="pk-tilt" data-pack-tilt>
@@ -148,14 +148,14 @@
   <span class="ff-halftone" aria-hidden="true" style="right: 4%; top: 30px; width: 460px; height: 320px;"></span>
   <div class="ff-trailer-head">
     <div style="display: flex; flex-direction: column; gap: 18px;">
-      <span class="ff-kicker">Teaser</span>
+      <span class="ff-kicker">Trailer</span>
       <h2 class="ff-display ff-h2" id="trailer-title">Take a <em class="ff-line">sneak peek.</em></h2>
-      <p class="ff-lede">The first look at the Mega Dimension, cut from the game itself.</p>
+      <p class="ff-lede">The Mega Dimension, cut from the game itself.</p>
     </div>
   </div>
   <div class="ff-trailer-wrap">
-    <a class="ff-trailer" data-trailer="75CD_-u-niM" data-title="The Mega Dimension — teaser" href="https://www.youtube.com/watch?v=75CD_-u-niM" target="_blank" rel="noopener" aria-label="Play the Mega Dimension teaser">
-      <img src="assets/md/teaser-poster.webp" width="1280" height="720" alt="">
+    <a class="ff-trailer" data-trailer="QpjvGgc5d-M" data-title="The Mega Dimension — trailer" href="https://www.youtube.com/watch?v=QpjvGgc5d-M" target="_blank" rel="noopener" aria-label="Play the Mega Dimension trailer">
+      <img src="assets/md/release-trailer-poster.webp" width="1280" height="720" alt="">
       <span class="ff-trailer-play" aria-hidden="true"><i class="ff-i ff-i-play"></i></span>
     </a>
   </div>
@@ -191,60 +191,18 @@
     </div>
     <div class="md-rules">
       <div class="md-rule"><span class="ff-tag ff-tag--gold">After 23 stones</span><b>Legend rifts</b><span>Bring Mable every rogue Mega's stone and the rifts change. Primal Groudon, Primal Kyogre and Mega Rayquaza each take a rift of their own.</span></div>
-      <div class="md-rule"><span class="ff-tag ff-tag--ink">46 of them</span><b>Shiny Shadow</b><span>Shadow Pokémon can be shiny now, with a gold aura. In a rift a shiny shows in colour on the gray map before you ever battle it.</span></div>
+      <div class="md-rule"><span class="ff-tag ff-tag--ink">Whole game</span><b>Shiny Shadow</b><span>Shadow Pokémon can be shiny now, anywhere in the game, not only in rifts. 46 of them have their own shiny colours, with a gold aura instead of violet.</span></div>
       <div class="md-rule"><span class="ff-tag ff-tag--ink">Tradewind</span><b>Hotel Z</b><span>Officially a hotel, unofficially Team MZ's base. Mable keeps the stone tally, the partners wait in the lobby, and six new quests start here.</span></div>
       <div class="md-rule"><span class="ff-tag ff-tag--gold">Post-game</span><b>Rift Sanctums</b><span>A partner at full friendship opens a barrier in one rift. Behind it: three Mutrid holdouts, then a Shadow legend.</span></div>
     </div>
+    <div class="md-roads-links">
+      <a class="ff-btn ff-btn--violet ff-btn--sm" href="handbook">The Mega Dimension handbook<i class="ff-i ff-i-arrow" aria-hidden="true"></i></a>
+      <a class="ff-btn ff-btn--outline ff-btn--sm" href="guide#md1">Every rift on the map<i class="ff-i ff-i-arrow" aria-hidden="true"></i></a>
+    </div>
   </div>
 </section>
 
-<template id="cards-reveal">
-<section class="fc md-megas ff-torn-top ff-torn-bottom" id="cards" data-fc="assets/cards/cards.json" aria-roledescription="carousel" aria-labelledby="megas-title" tabindex="0">
-  <div class="fc-stage">
-    <div class="fc-glow" aria-hidden="true"></div>
-    <div class="fc-floor" aria-hidden="true"></div>
-    <div class="fc-ghosts" aria-hidden="true"></div>
-    <div class="fc-row"></div>
-    <div class="fc-vignette" aria-hidden="true"></div>
-    <div class="fc-strip" aria-label="All cards"><div class="fc-strip-inner"></div></div>
-    <div class="fc-select" aria-hidden="true"></div>
 
-    <div class="fc-head">
-      <span class="ff-kicker">Mega Evolution · the card set</span>
-      <h2 class="ff-display fc-title" id="megas-title">23 new <em>Megas.</em></h2>
-    </div>
-    <div class="fc-tools">
-      <button class="fc-pill fc-sound" type="button" aria-pressed="true" data-fc-sound><i class="fc-i fc-i-sound" aria-hidden="true"></i><span>Sound</span></button>
-    </div>
-
-    <div class="fc-foot">
-      <p class="fc-tagline">Every Mega in the update, full art.<br>Every number on a card is the game's own.</p>
-      <div class="fc-counter">
-        <div class="fc-count">
-          <button class="fc-arrow" type="button" data-fc-prev aria-label="Previous card"><i class="ff-i ff-i-chevron fc-flip" aria-hidden="true"></i></button>
-          <span class="fc-roll"><span class="fc-num" data-fc-num>01</span></span>
-          <span class="fc-of">/ 30</span>
-          <button class="fc-arrow" type="button" data-fc-next aria-label="Next card"><i class="ff-i ff-i-chevron" aria-hidden="true"></i></button>
-        </div>
-        <span class="fc-roll fc-caproll"><span class="fc-cap" data-fc-cap>&nbsp;</span></span>
-      </div>
-      <div class="fc-right">
-        <span class="fc-roll"><span class="fc-credit" data-fc-credit>Illus. CDRX73</span></span>
-        <span class="fc-hint">Drag the cards · tap one to flip it</span>
-      </div>
-    </div>
-    <p class="ff-sr" aria-live="polite" data-fc-live></p>
-  </div>
-
-  <noscript>
-    <div class="fc-noscript">
-      <img src="assets/cards/img/butterfree-360.webp" width="360" height="504" alt="Mega Butterfree card">
-      <img src="assets/cards/img/lugia-360.webp" width="360" height="504" alt="Mega Lugia card">
-      <img src="assets/cards/img/darkrai-360.webp" width="360" height="504" alt="Mega Darkrai card">
-    </div>
-  </noscript>
-</section>
-</template>
 
 <section class="ff-night ff-band nx-band" id="partners" aria-labelledby="partners-title">
   <span class="ff-halftone" aria-hidden="true" style="right: 2%; top: 20px; width: 420px; height: 300px;"></span>
@@ -278,7 +236,7 @@
   </div>
 </section>
 
-<section class="ff-night ff-band nx-band nx-split nx-update" id="update" aria-labelledby="update-title">
+<section class="ff-night ff-band nx-band nx-split nx-update" id="how-to-update" aria-labelledby="update-title">
   <div class="ff-wrap">
     <div class="g-head-block">
       <span class="md-hud g-mark" data-state="run" aria-hidden="true">2<i>:</i>00</span>
@@ -308,11 +266,132 @@
       </article></div>
     </div>
     <div class="md-update-ctas">
-      <a class="ff-btn ff-btn--violet" href="game#update">Update my game<i class="ff-i ff-i-arrow" aria-hidden="true"></i></a>
-      <a class="ff-btn ff-btn--outline" href="game#downloads">New here? Patch and play<i class="ff-i ff-i-arrow" aria-hidden="true"></i></a>
+      <a class="ff-btn ff-btn--violet" href="#update">Update my game<i class="ff-i ff-i-arrow" aria-hidden="true"></i></a>
+      <a class="ff-btn ff-btn--outline" href="#patch">New here? Patch and play<i class="ff-i ff-i-arrow" aria-hidden="true"></i></a>
     </div>
-    <p class="ff-note" style="margin-top: 18px;">We share a patch, not a game. Bring your own legally obtained ROM.</p>
-    <a class="md-home-line" href="game"><img src="assets/art/shadow-jirachi-logo.png" alt=""><b>The base game: Wishes of Tomorrow</b><span>The colour comes back when you leave.</span></a>
+        <a class="md-home-line" href="game"><img src="assets/art/shadow-jirachi-logo.png" alt=""><b>The base game: Wishes of Tomorrow</b><span>The colour comes back when you leave.</span></a>
+  </div>
+</section>
+
+<!-- Download, the two counters and the updater: the same block as /game (site.js, patcher.js,
+     updater.js), so a visitor can patch, update or play without leaving the Mega Dimension page. -->
+<section class="ff-night ff-band nx-band nx-downloads" id="downloads" aria-labelledby="dl-title" data-patcher>
+  <div class="ff-wrap ff-downloads">
+    <div class="ff-downloads-copy">
+      <span class="ff-kicker">Free · no account · no launcher</span>
+      <h2 class="ff-display ff-h2" id="dl-title">Download <em class="ff-line"><span data-version>v1.3.0</span>.</em></h2>
+      <p class="ff-lede">Grab the patch from the latest release and apply it to your own legally obtained base ROM.</p>
+      <div class="ff-counters">
+        <!-- Two SEPARATE tallies, and each says whose it is. The first is
+             GitHub's count of release-asset downloads, which is what the
+             Patch file button points at; the second is Hackdex's own. Neither
+             contains the other, so they are never summed. -->
+        <div class="ff-counter" data-counter>
+          <span class="ff-digits" data-count-digits aria-hidden="true"><span>0</span><span>0</span><span>0</span><span>0</span></span>
+          <span class="ff-counter-label"><span class="ff-sr" data-count-sr>Downloads from here</span><span class="ff-counter-title" data-count-title aria-hidden="true">Downloads from here</span><span class="ff-counter-sub" data-count-sub>since 12 August 2026</span></span>
+        </div>
+        <!-- Hidden until data/hackdex.json loads, so a missing file shows
+             nothing rather than a chip reading zero. -->
+        <div class="ff-counter" data-hd-counter hidden>
+          <span class="ff-digits" data-hd-digits aria-hidden="true"><span>0</span><span>0</span><span>0</span><span>0</span></span>
+          <span class="ff-counter-label"><span class="ff-sr" data-hd-sr>Downloads on Hackdex</span><span class="ff-counter-title" aria-hidden="true">Downloads on Hackdex</span><span class="ff-counter-sub" data-hd-sub></span></span>
+        </div>
+      </div>
+      <div class="ff-links">
+        <a class="ff-btn ff-btn--violet" data-patch-link href="https://github.com/jmaloney95/Wishes-Game/releases/download/v1.3.0/wishes-of-tomorrow-1.3.0.bps">Patch file (.bps)<i class="ff-i ff-i-download" aria-hidden="true"></i></a>
+        <a class="ff-btn ff-btn--outline" href="https://github.com/jmaloney95/Wishes-Game/releases/latest">Release notes<i class="ff-i ff-i-external" aria-hidden="true"></i></a>
+      </div>
+      <a class="ff-hackdex" href="https://www.hackdex.app/hack/wishes-of-tomorrow">
+        <span><span class="ff-hackdex-kicker">ALSO LISTED ON</span><span class="ff-hackdex-name">Hackdex</span></span>
+        <i class="ff-i ff-i-external" aria-hidden="true"></i>
+      </a>
+    </div>
+
+    <div class="ff-patchbox">
+    <!-- Two tabs over one box: a fresh patch, or an update that keeps the
+         player's save. site.js opens #update straight from a shared link. -->
+    <div class="ff-tabs ff-tabs--quest" role="tablist" aria-label="New game or update">
+      <button class="ff-tab" role="tab" type="button" aria-selected="true" aria-controls="patch" id="tab-patch" data-tab="patch-new">Patch &amp; play</button>
+      <button class="ff-tab" role="tab" type="button" aria-selected="false" aria-controls="update" id="tab-update" data-tab="update">Update my game</button>
+    </div>
+    <div class="ff-quest" id="patch" role="tabpanel" aria-labelledby="tab-patch" data-panel="patch-new">
+      <div class="ff-quest-head">
+        <h3 class="ff-quest-title" id="patch-title">Patch &amp; play</h3>
+        <span class="ff-lock"><i class="ff-i ff-i-lock ff-i--1x" aria-hidden="true"></i>100% local · no upload</span>
+      </div>
+      <ol class="ff-quest-list">
+        <li class="ff-quest-row" data-slot="rom">
+          <span class="ff-quest-num">1</span>
+          <div style="min-width: 0;"><div class="ff-quest-name">Your base ROM</div><div class="ff-quest-sub"><span data-slot-name>No file chosen</span> <span data-slot-note></span></div><div class="ff-quest-bar"><i></i></div></div>
+          <div class="ff-quest-end"><label class="ff-btn ff-btn--light ff-btn--sm ff-quest-file" for="rom-file">Choose<input id="rom-file" type="file"></label></div>
+        </li>
+        <li class="ff-quest-row" data-slot="patch">
+          <span class="ff-quest-num">2</span>
+          <div style="min-width: 0;"><div class="ff-quest-name">The patch</div><div class="ff-quest-sub"><span data-slot-name>Loading…</span> <span data-slot-note></span></div><div class="ff-quest-bar"><i></i></div></div>
+          <div class="ff-quest-end"><label class="ff-btn ff-btn--light ff-btn--sm ff-quest-file" for="patch-file" title="Use a different patch file">Other<input id="patch-file" type="file"></label></div>
+        </li>
+        <li class="ff-quest-row">
+          <span class="ff-quest-num">3</span>
+          <div style="min-width: 0;"><div class="ff-quest-name">Apply the patch</div><div class="ff-quest-sub">Checks your ROM against the patch first.</div><div class="ff-quest-bar"><i></i></div></div>
+          <div class="ff-quest-end"><button class="ff-btn ff-btn--violet ff-btn--sm" type="button" data-patch-apply disabled>Apply</button><a class="ff-btn ff-btn--light ff-btn--sm" data-patch-result hidden>Save</a></div>
+        </li>
+        <li class="ff-quest-row">
+          <span class="ff-quest-num">4</span>
+          <div style="min-width: 0;"><div class="ff-quest-name">Play in browser</div><div class="ff-quest-sub">Keyboard on desktop, a touch pad on phones.</div></div>
+          <!-- Shown from the start, disabled, so it's obvious that patching
+               leads somewhere. Enabled once a patch succeeds. -->
+          <div class="ff-quest-end"><button class="ff-btn ff-btn--violet ff-btn--sm" type="button" data-patch-play disabled title="Apply the patch first">Play in browser</button></div>
+        </li>
+      </ol>
+      <p class="patch-status is-idle" data-patch-status role="status" aria-live="polite"><strong>Loading the patcher…</strong></p>
+      <p class="ff-legal">We share a patch, not a game. Bring your own legally obtained ROM.</p>
+    </div>
+
+    <!-- The update route (assets/updater.js). The player brings whatever they
+         have: their WoT ROM (any version), their save, or both. A ROM comes
+         back as the latest version under the SAME filename, which is how most
+         emulators pair a ROM with its save; a save alone also asks for the
+         base ROM. Either way: Download, or Play in browser with that save.
+         No file-type filter on the inputs: iOS greys out .gba otherwise. -->
+    <div class="ff-quest" id="update" role="tabpanel" aria-labelledby="tab-update" data-panel="update" data-updater>
+      <div class="ff-quest-head">
+        <h3 class="ff-quest-title">Keep your save</h3>
+        <span class="ff-lock"><i class="ff-i ff-i-lock ff-i--1x" aria-hidden="true"></i>100% local · no upload</span>
+      </div>
+      <ol class="ff-quest-list">
+        <li class="ff-quest-row" data-slot="mine">
+          <span class="ff-quest-num">1</span>
+          <div style="min-width: 0;"><div class="ff-quest-name">Your game or save</div><div class="ff-quest-sub"><span data-slot-name>Any version's .gba, or your .sav</span> <span data-slot-note></span></div></div>
+          <div class="ff-quest-end"><label class="ff-btn ff-btn--light ff-btn--sm ff-quest-file" for="mine-file">Choose<input id="mine-file" type="file"></label></div>
+        </li>
+        <li class="ff-quest-row" data-slot="base" hidden>
+          <span class="ff-quest-num">2</span>
+          <div style="min-width: 0;"><div class="ff-quest-name">Your Emerald ROM</div><div class="ff-quest-sub"><span data-slot-name>Or any Wishes of Tomorrow .gba</span> <span data-slot-note></span></div></div>
+          <div class="ff-quest-end"><label class="ff-btn ff-btn--light ff-btn--sm ff-quest-file" for="base-file">Choose<input id="base-file" type="file"></label></div>
+        </li>
+        <li class="ff-quest-row">
+          <span class="ff-quest-num" data-get-num>2</span>
+          <div style="min-width: 0;"><div class="ff-quest-name">Get <span data-update-latest>v1.3.0</span></div><div class="ff-quest-sub">Download it, or play now.</div><div class="ff-quest-bar"><i></i></div></div>
+          <div class="ff-quest-end"><a class="ff-btn ff-btn--violet ff-btn--sm" data-update-result hidden>Download</a><button class="ff-btn ff-btn--light ff-btn--sm" type="button" data-update-play disabled>Play in browser</button></div>
+        </li>
+      </ol>
+      <p class="patch-status is-idle" data-update-status role="status" aria-live="polite"><strong>Choose your game file or your save.</strong></p>
+      <p class="ff-legal">Replace your old game with the new file. On Delta, add the new game, then import your save onto it.</p>
+    </div>
+    </div>
+  </div>
+  <!-- Built only when the player asks for it: the emulator is about a
+       megabyte and a half, and most visitors just want the patch. -->
+  <div class="ff-wrap ff-player" data-player hidden>
+    <div class="ff-player-head">
+      <span class="ff-player-plate">Now playing</span>
+      <div class="ff-player-actions">
+        <button class="ff-btn ff-btn--outline ff-btn--sm" type="button" data-player-fs>Fullscreen</button>
+        <button class="ff-btn ff-btn--outline ff-btn--sm" type="button" data-player-close>Close player</button>
+      </div>
+    </div>
+    <div class="ff-player-stage"><div id="game"></div></div>
+    <p class="ff-player-note">Desktop: arrows + <b>Z</b>/<b>X</b>, <b>Enter</b> for Start. Phone: the pad appears on its own; <b>Fast</b> toggles fast-forward and <b>Fullscreen</b> goes big. Saves live in this browser; export from the emulator's menu to keep one.</p>
   </div>
 </section>
 </main>
@@ -348,8 +427,10 @@
   </div>
 </footer>
 
-<script src="assets/site.js?v=20261109a" defer></script>
-<script src="assets/md/md.js?v=20261109a" defer></script>
-<script src="assets/pack/pack.js?v=20261113a" defer></script>
+<script src="assets/site.js?v=20261117a" defer></script>
+<script src="assets/patcher.js?v=20261117a" defer></script>
+<script src="assets/updater.js?v=20261117a" defer></script>
+<script src="assets/md/md.js?v=20261117a" defer></script>
+<script src="assets/pack/pack.js?v=20261116c" defer></script>
 </body>
 </html>

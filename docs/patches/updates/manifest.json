@@ -1,41 +1,46 @@
 {
-  "latest": "1.2.6",
-  "latestCrc": "F1EEEA17",
+  "latest": "1.3.0",
+  "latestCrc": "5A5FC74F",
   "from": {
     "4056030C": {
       "version": "1.0.0",
-      "url": "patches/updates/wot-1.0.0-to-1.2.6.bps",
-      "size": 2819311
+      "url": "patches/updates/wot-1.0.0-to-1.3.0.bps",
+      "size": 3640697
     },
     "47253C41": {
       "version": "1.1.0",
-      "url": "patches/updates/wot-1.1.0-to-1.2.6.bps",
-      "size": 2763780
+      "url": "patches/updates/wot-1.1.0-to-1.3.0.bps",
+      "size": 3550182
     },
     "8AA8F352": {
       "version": "1.2.0",
-      "url": "patches/updates/wot-1.2.0-to-1.2.6.bps",
-      "size": 2735528
+      "url": "patches/updates/wot-1.2.0-to-1.3.0.bps",
+      "size": 3525992
     },
     "81AF35BA": {
       "version": "1.2.1",
-      "url": "patches/updates/wot-1.2.1-to-1.2.6.bps",
-      "size": 2713990
+      "url": "patches/updates/wot-1.2.1-to-1.3.0.bps",
+      "size": 3526508
     },
     "52866AB5": {
       "version": "1.2.2",
-      "url": "patches/updates/wot-1.2.2-to-1.2.6.bps",
-      "size": 2712888
+      "url": "patches/updates/wot-1.2.2-to-1.3.0.bps",
+      "size": 3518494
     },
     "E5FDE65B": {
       "version": "1.2.3",
-      "url": "patches/updates/wot-1.2.3-to-1.2.6.bps",
-      "size": 2093277
+      "url": "patches/updates/wot-1.2.3-to-1.3.0.bps",
+      "size": 3298183
     },
     "A8AA31E3": {
       "version": "1.2.4",
-      "url": "patches/updates/wot-1.2.4-to-1.2.6.bps",
-      "size": 2108610
+      "url": "patches/updates/wot-1.2.4-to-1.3.0.bps",
+      "size": 3290749
+    },
+    "F1EEEA17": {
+      "version": "1.2.6",
+      "url": "patches/updates/wot-1.2.6-to-1.3.0.bps",
+      "size": 3305876
     }
   }
 }

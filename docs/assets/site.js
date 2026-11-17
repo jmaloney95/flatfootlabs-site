@@ -6,8 +6,8 @@
 
   /* ── the one thing to edit per release ──────────────────────────── */
   var RELEASE = {
-    version: "1.2.6",
-    date: "12 August 2026"   // shown only if the count can't load ("released ...")
+    version: "1.3.0",
+    date: "17 November 2026"   // shown only if the count can't load ("released ...")
   };
 
   /* ── download counter ───────────────────────────────────────────────

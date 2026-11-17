@@ -1,0 +1,198 @@
+/* The card scroll (cards.html): the Mega cards stand on a glossy floor; the row steps one card at a
+   time, after the Vessel section on supply.madebyoversight.com. cards.js lays it out (sizes, positions
+   and the tint are set from script); this file holds the look. Everything is prefixed fc-. */
+
+.fc {
+  --fc-bg: #1d1923; --fc-glow: #3a3046;
+  position: relative; isolation: isolate; z-index: 2;   /* above the paper band, so the torn bottom edge shows */
+  height: clamp(600px, 100svh, 980px);
+  background-color: var(--fc-bg); color: var(--on-night);
+  touch-action: pan-y; user-select: none; -webkit-user-select: none;
+  outline: none;
+}
+.fc:focus-visible { box-shadow: inset 0 0 0 3px var(--gold); }
+/* clip, not hidden: a hidden box can still be scrolled (by focus), which would shift the whole stage */
+.fc-stage { position: absolute; inset: 0; overflow: hidden; overflow: clip; }
+/* the site's light grain over the whole band */
+.fc-stage::after {
+  content: ""; position: absolute; inset: 0; z-index: 9; pointer-events: none;
+  background-image: var(--tex-grain-light); opacity: .55; mix-blend-mode: soft-light;
+}
+
+/* backdrop: the focused card's tint, a glow behind it, a dark glossy floor, a vignette */
+.fc-glow {
+  position: absolute; inset: 0; color: var(--fc-glow);
+  background: radial-gradient(ellipse 38% 52% at 50% var(--fc-glow-y, 40%), currentColor 0%, transparent 74%);
+}
+.fc-floor {
+  position: absolute; left: 0; right: 0; top: var(--fc-floor, 70%); bottom: 0;
+  background:
+    linear-gradient(90deg, transparent 4%, rgba(255,255,255,.10) 30%, rgba(255,255,255,.16) 50%, rgba(255,255,255,.10) 70%, transparent 96%) top / 100% 2px no-repeat,
+    radial-gradient(ellipse 40% 26% at 50% 0%, rgba(255,255,255,.07), transparent 80%),
+    linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,.62) 45%, rgba(0,0,0,.78) 100%);
+}
+.fc-vignette {
+  position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background: radial-gradient(ellipse 75% 80% at 50% 46%, transparent 55%, rgba(0,0,0,.5) 100%);
+}
+
+/* the ghost title behind the row */
+.fc-ghosts { position: absolute; inset: 0; pointer-events: none; }
+.fc-ghost {
+  position: absolute; left: 0; right: 0; top: 0; text-align: center; white-space: nowrap;
+  font-family: var(--font-display); font-size: 300px; line-height: 1; letter-spacing: .01em;
+  color: rgba(255, 255, 255, .085); opacity: 0; will-change: transform, opacity;
+}
+
+/* the row: script sets each card's width, position and transform (scaled from its foot) */
+.fc-row { position: absolute; inset: 0; z-index: 1; cursor: grab; }
+.fc.is-dragging .fc-row, .fc.is-dragging .fc-strip { cursor: grabbing; }
+.fc-card { position: absolute; left: 0; top: 0; transform-origin: 50% 100%; will-change: transform; }
+.fc.is-over-card .fc-row { cursor: pointer; }
+/* the card's body: front and back faces, turned in 3D (tilt, flip) by script; flat (no transform,
+   one face shown) whenever the card is at rest, so the art stays pixel-exact */
+.fc-body { position: absolute; inset: 0; }
+.fc-card.is-3d .fc-body { transform-style: preserve-3d; }   /* a 3D context only while it turns */
+.fc-side { position: absolute; inset: 0; border-radius: 4.1667% / 2.976%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.fc-side img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; -webkit-user-drag: none; user-select: none; pointer-events: none; }
+.fc-side--back { transform: rotateY(180deg); }
+.fc-card:not(.is-3d) .fc-side { backface-visibility: visible; -webkit-backface-visibility: visible; }
+.fc-card:not(.is-3d) .fc-side--back { transform: none; visibility: hidden; }
+.fc-card:not(.is-3d).is-back .fc-side--back { visibility: visible; }
+.fc-card:not(.is-3d).is-back .fc-side--front { visibility: hidden; }
+/* the light on a tilted card: a soft highlight under the pointer and a sheen band that slides with it */
+.fc-light {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none; mix-blend-mode: overlay;
+  opacity: var(--fc-lt, 0);
+  background:
+    radial-gradient(circle at var(--fc-mx, 50%) var(--fc-my, 50%), rgba(255,255,255,.55), rgba(255,255,255,.1) 30%, transparent 58%),
+    linear-gradient(110deg, transparent 35%, rgba(255,255,255,.24) 45%, transparent 55%) var(--fc-mx, 50%) 0 / 300% 100% no-repeat;
+}
+.fc-side--back .fc-light {
+  background:
+    radial-gradient(circle at var(--fc-mxb, 50%) var(--fc-my, 50%), rgba(255,255,255,.5), rgba(255,255,255,.08) 30%, transparent 58%),
+    linear-gradient(110deg, transparent 35%, rgba(255,255,255,.2) 45%, transparent 55%) var(--fc-mxb, 50%) 0 / 300% 100% no-repeat;
+}
+.fc-card:not(.is-3d) .fc-light, .fc-refl .fc-light { display: none; }
+/* the reflection: the same two faces, mirrored on the floor; it turns with the flip */
+.fc-refl {
+  position: absolute; left: 0; top: calc(100% + 2px); width: 100%; height: 100%; opacity: .24; transform: scaleY(-1); pointer-events: none;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.35) 18%, transparent 46%);
+          mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.35) 18%, transparent 46%);
+}
+.fc-shadow {
+  position: absolute; left: -8%; right: -8%; bottom: -12px; height: 24px; pointer-events: none;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,0,0,.6), transparent 70%);
+}
+/* the card files have rounded corners (30 of 720 card px) */
+.fc-dim, .fc-glare { position: absolute; inset: 0; border-radius: 4.1667% / 2.976%; pointer-events: none; }
+.fc-dim { background: #07060a; opacity: 0; }
+.fc-glare {
+  opacity: 0; mix-blend-mode: overlay;
+  background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,.5) 47%, rgba(255,255,255,.14) 51%, transparent 58%) 140% 0 / 320% 100% no-repeat;
+}
+.fc-card.is-arriving .fc-glare { animation: fc-glare .7s cubic-bezier(.45, 0, .2, 1) both; }
+@keyframes fc-glare { from { opacity: 1; background-position: 140% 0; } to { opacity: 1; background-position: -40% 0; } }
+
+/* the sprite strip under a fixed selection frame */
+.fc-strip {
+  position: absolute; left: 0; right: 0; top: var(--fc-strip, 80%); height: calc(var(--fc-th, 100px) + 30px); z-index: 3; cursor: grab;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.5) 12%, #000 34%, #000 66%, rgba(0,0,0,.5) 88%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.5) 12%, #000 34%, #000 66%, rgba(0,0,0,.5) 88%, transparent 100%);
+}
+.fc-strip-inner { position: absolute; inset: 0; }
+.fc-tile {
+  position: absolute; left: 0; top: 0; width: var(--fc-tw, 116px); height: var(--fc-th, 100px);
+  padding: 0; border: 0; background: none; color: inherit; cursor: inherit; will-change: transform;
+}
+.fc-tile-bg { position: absolute; inset: 0; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.10), 0 10px 24px rgba(0,0,0,.35); }
+.fc-tile img { position: absolute; image-rendering: pixelated; pointer-events: none; -webkit-user-drag: none; }
+.fc-tile-cap {
+  position: absolute; left: 2px; right: 0; top: calc(100% + 8px); white-space: nowrap; text-align: left;
+  overflow: hidden; text-overflow: ellipsis;
+  font-family: var(--font-sans); font-size: 13px; font-weight: 500; color: rgba(255,255,255,.62);
+}
+.fc-tile-cap b { font-weight: 700; color: rgba(255,255,255,.9); margin-right: 7px; }
+.fc-tile:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; border-radius: 12px; }
+.fc-select {
+  position: absolute; z-index: 4; pointer-events: none; border-radius: 14px;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.85);
+}
+
+/* UI, in the reference's quiet corners */
+.fc-head { position: absolute; left: 40px; top: 36px; z-index: 5; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+.fc-title { font-size: clamp(40px, 4.6vw, 72px); color: var(--on-night); }
+.fc .ff-display em { color: var(--violet-glow); }
+.fc .ff-kicker { color: var(--violet-glow); }
+.fc-tools { position: absolute; right: 40px; top: 40px; z-index: 5; display: flex; gap: 10px; }
+.fc-pill {
+  display: inline-flex; align-items: center; gap: 9px; height: 38px; padding: 0 16px; border: 0; border-radius: 999px;
+  font-family: var(--font-sans); font-size: 15px; font-weight: 700; color: #fff; cursor: pointer;
+  background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+  transition: background .15s ease;
+}
+.fc-pill:hover { background: rgba(255,255,255,.16); }
+.fc-pill:focus-visible, .fc-arrow:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.fc-i { display: inline-block; width: 16px; height: 16px; background: currentColor; -webkit-mask: var(--fc-i) center / contain no-repeat; mask: var(--fc-i) center / contain no-repeat; image-rendering: pixelated; }
+.fc-i-sound { --fc-i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 11' shape-rendering='crispEdges'%3E%3Cpath d='M0 4h2v3h-2zM2 3h1v5h-1zM3 2h1v7h-1zM4 1h1v9h-1zM6 4h1v3h-1zM7 2h1v1h-1zM8 3h1v5h-1zM7 8h1v1h-1zM9 1h1v1h-1zM10 2h1v7h-1zM9 9h1v1h-1z'/%3E%3C/svg%3E"); }
+.fc-sound[aria-pressed="false"] .fc-i-sound { --fc-i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 11' shape-rendering='crispEdges'%3E%3Cpath d='M0 4h2v3h-2zM2 3h1v5h-1zM3 2h1v7h-1zM4 1h1v9h-1zM6 3h1v1h-1zM9 3h1v1h-1zM7 4h2v1h-2zM7 5h2v1h-2zM7 6h2v1h-2zM6 7h1v1h-1zM9 7h1v1h-1z'/%3E%3C/svg%3E"); }
+.fc-sound[aria-pressed="false"] { color: rgba(255,255,255,.6); }
+
+.fc-foot {
+  position: absolute; left: 40px; right: 40px; bottom: 28px; z-index: 5;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 20px;
+  font-family: var(--font-sans); pointer-events: none;
+}
+.fc-foot button { pointer-events: auto; }
+.fc-tagline { margin: 0; font-size: 16px; line-height: 1.35; font-weight: 500; color: rgba(255,255,255,.72); }
+.fc-counter { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.fc-count { display: flex; align-items: center; gap: 14px; font-weight: 700; font-size: 20px; color: #fff; }
+.fc-arrow {
+  display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 999px; padding: 0;
+  background: transparent; color: #fff; opacity: .55; cursor: pointer; transition: opacity .15s ease, background .15s ease;
+}
+.fc-arrow .ff-i { width: 13px; height: 13px; }
+.fc-arrow:hover, .fc-arrow.is-pressed { opacity: 1; background: rgba(255,255,255,.1); }
+.fc-flip { transform: scaleX(-1); }
+.fc-of { opacity: .5; }
+.fc-roll { position: relative; display: inline-block; overflow: hidden; vertical-align: bottom; }
+.fc-roll > span { display: inline-block; }
+.fc-num { min-width: 1.6em; text-align: right; font-variant-numeric: tabular-nums; }
+.fc-cap, .fc-credit { font-size: 15px; color: rgba(255,255,255,.62); white-space: nowrap; }
+.fc-cap i { font-style: normal; margin: 0 8px; opacity: .6; }
+.fc-cap a { pointer-events: auto; color: inherit; text-decoration: underline; text-decoration-color: rgba(255,255,255,.3); text-underline-offset: 3px; }
+.fc-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.fc-credit { font-size: 16px; color: rgba(255,255,255,.75); }
+.fc-hint { font-size: 13px; color: rgba(255,255,255,.45); }
+.fc-roll.is-up > span { animation: fc-in-up .42s cubic-bezier(.3, 0, .2, 1) both; }
+.fc-roll.is-down > span { animation: fc-in-down .42s cubic-bezier(.3, 0, .2, 1) both; }
+@keyframes fc-in-up { from { transform: translateY(100%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes fc-in-down { from { transform: translateY(-100%); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* the paper band under the scroll */
+.fc-about { padding-bottom: 150px; }
+.fc-about-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 32px 64px; align-items: start; }
+.fc-about-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+.fc-about-copy .ff-body { max-width: 52ch; }
+@media (max-width: 860px) { .fc-about-grid { grid-template-columns: 1fr; } .fc-about { padding: 72px 20px 130px; } }
+
+.fc-noscript { display: flex; gap: 20px; justify-content: center; padding: 160px 20px 40px; }
+.fc-noscript img { width: 240px; height: auto; }
+.fc.is-failed .fc-hint::after { content: " (the cards could not load)"; }
+
+@media (max-width: 719px) {
+  .fc { height: clamp(580px, 100svh, 820px); }
+  .fc-head { left: 18px; top: 30px; gap: 8px; }
+  .fc-title { font-size: clamp(34px, 10vw, 48px); }
+  .fc-tools { right: 16px; top: 30px; }
+  .fc-pill span { display: none; }
+  .fc-pill { width: 40px; padding: 0; justify-content: center; }
+  .fc-foot { left: 16px; right: 16px; bottom: 18px; grid-template-columns: 1fr; justify-items: center; gap: 8px; }
+  .fc-tagline, .fc-right { display: none; }
+  .fc-cap { font-size: 14px; }
+  .fc-tile-cap { font-size: 12px; }
+  .fc-ghost { color: rgba(255, 255, 255, .07); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fc-card.is-arriving .fc-glare, .fc-roll.is-up > span, .fc-roll.is-down > span { animation: none; }
+}

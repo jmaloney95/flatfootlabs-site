@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your binder — Pokémon Wishes of Tomorrow</title>
+<meta name="description" content="Every Mega card you pull from a Mega Dimension pack, kept in a binder. 30 cards: 28 Megas and 2 secret rares.">
+<meta name="theme-color" content="#0d0916">
+<link rel="icon" href="assets/art/battle-sprite.png" type="image/png">
+<link rel="canonical" href="https://flatfootlabs.com/binder">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Flatfoot Games">
+<meta property="og:url" content="https://flatfootlabs.com/binder">
+<meta property="og:title" content="The Mega Dimension card binder">
+<meta property="og:description" content="Open packs, pull Megas, fill the binder. 28 Megas and 2 secret rares.">
+<meta property="og:image" content="https://flatfootlabs.com/assets/md/og-mega-dimension-out.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://flatfootlabs.com/assets/md/og-mega-dimension-out.jpg">
+
+<link rel="preload" href="assets/fonts/Anton-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/wot.css?v=20261117a">
+<link rel="stylesheet" href="assets/md/md.css?v=20261117a">
+<link rel="stylesheet" href="assets/md/neon.css?v=20261117a">
+<link rel="stylesheet" href="assets/binder/binder.css?v=20261116b">
+</head>
+<body class="md-neon">
+
+<a class="ff-skip" href="#binder-title">Skip to content</a>
+
+<main>
+<div id="top">
+  <header class="ff-header">
+    <a class="ff-logo" href="./">
+      <img src="assets/art/shadow-jirachi-logo.png" width="49" height="52" alt="">
+      <span class="ff-logo-word">Wishes of Tomorrow<small>A FLATFOOT GAMES RELEASE</small></span>
+    </a>
+    <nav class="ff-nav" aria-label="Site">
+      <a href="./">Mega Dimension<span class="ff-nav-new" aria-hidden="true">New</span></a>
+      <a href="game">The game</a>
+      <a href="dex">Pokédex</a>
+      <a href="guide">Field guide</a>
+    </nav>
+    <div class="ff-header-actions">
+      <a class="ff-iconbtn" href="labs" title="Flatfoot Labs"><i class="ff-i ff-i-flask" aria-hidden="true"></i><span class="ff-sr">Flatfoot Labs</span></a>
+      <a class="ff-btn ff-btn--violet ff-btn--sm" href="game#downloads">Download<i class="ff-i ff-i-arrow" aria-hidden="true"></i></a>
+    </div>
+  </header>
+</div>
+
+<!-- The binder (assets/binder: binder.css, binder.js). It shows the cards this browser has pulled
+     from the home page's packs; nothing is sent anywhere. Closed, it shows its cover; open, its pocket
+     pages: two facing pages across the rings on wide screens, one page on phones. -->
+<section class="bd ff-night" id="binder" aria-labelledby="binder-title" data-bd="assets/cards/cards.json">
+  <div class="bd-head">
+    <div class="bd-titles">
+      <span class="ff-kicker">Mega Dimension · the card set</span>
+      <h1 class="ff-display bd-title" id="binder-title">Your <em>binder.</em></h1>
+    </div>
+    <div class="bd-progress" aria-live="polite">
+      <p class="bd-count"><b data-bd-have>0</b><span>/ <span data-bd-total>30</span></span><small data-bd-status>cards collected</small></p>
+      <span class="bd-bar" aria-hidden="true"><span data-bd-bar></span></span>
+    </div>
+    <div class="bd-actions">
+      <a class="ff-btn ff-btn--violet ff-btn--sm" href="./#cards">Open a pack<i class="ff-i ff-i-arrow" aria-hidden="true"></i></a>
+      <button class="bd-pill" type="button" data-bd-sound aria-pressed="true" title="Sound"><i class="bd-i bd-i-sound" aria-hidden="true"></i><span>Sound</span></button>
+    </div>
+  </div>
+
+  <p class="bd-empty" data-bd-empty hidden>No cards yet. Every pack on the <a href="./#cards">home page</a> puts a new Mega in here.</p>
+  <p class="bd-failed" data-bd-failed hidden>The cards could not load. They arrive with the update; try again in a minute.</p>
+
+  <div class="bd-stage" data-bd-stage>
+    <div class="bd-binder" data-bd-binder>
+      <!-- binder.js builds the pages, the rings and the cover in here -->
+    </div>
+  </div>
+
+  <div class="bd-foot">
+    <button class="bd-arrow" type="button" data-bd-prev aria-label="Previous page"><i class="ff-i ff-i-arrow bd-flipx" aria-hidden="true"></i></button>
+    <span class="bd-where" data-bd-where>Closed</span>
+    <button class="bd-arrow" type="button" data-bd-next aria-label="Next page"><i class="ff-i ff-i-arrow" aria-hidden="true"></i></button>
+  </div>
+  <p class="bd-hint" data-bd-hint>Tap a card to look at it. Swipe or use the arrow keys to turn the pages.</p>
+  <p class="ff-sr" aria-live="polite" data-bd-live></p>
+</section>
+
+<!-- The card viewer: one card large; it tilts toward the pointer and turns over to its moves. -->
+<div class="bd-view" data-bd-view hidden role="dialog" aria-modal="true" aria-labelledby="bd-view-name">
+  <div class="bd-view-back" data-bd-close></div>
+  <div class="bd-view-box">
+    <button class="bd-view-x" type="button" data-bd-close aria-label="Close"><i class="ff-i ff-i-close" aria-hidden="true"></i></button>
+    <div class="bd-vcard" data-bd-vcard tabindex="0" aria-describedby="bd-view-help">
+      <div class="bd-vbody" data-bd-vbody>
+        <div class="bd-vside bd-vside--front"><img alt="" data-bd-vfront><i class="bd-vlight"></i></div>
+        <div class="bd-vside bd-vside--back"><img alt="" data-bd-vback><i class="bd-vlight"></i></div>
+      </div>
+    </div>
+    <div class="bd-vinfo">
+      <h2 id="bd-view-name" data-bd-vname></h2>
+      <p data-bd-vmeta></p>
+      <div class="bd-vcode" data-bd-vcode hidden>
+        <span class="bd-vcode-label">Mystery Code</span>
+        <code class="bd-vcode-value" data-bd-vcode-value></code>
+        <button class="bd-vcode-copy" type="button" data-bd-vcopy aria-label="Copy the Mystery Code">Copy</button>
+        <span class="bd-vcode-said" role="status" aria-live="polite"></span>
+      </div>
+      <p class="bd-vcode-note" data-bd-vcode-note hidden>Enter it at the Pokémon Center in Tradewind Town or Shin Tokyo to receive this Mega, once per save, from v1.3.0.</p>
+      <p class="bd-vhelp" id="bd-view-help">Tap the card to turn it over. Esc closes.</p>
+      <div class="bd-vnav">
+        <button class="bd-arrow" type="button" data-bd-vprev aria-label="Previous card you own"><i class="ff-i ff-i-arrow bd-flipx" aria-hidden="true"></i></button>
+        <button class="bd-arrow" type="button" data-bd-vnext aria-label="Next card you own"><i class="ff-i ff-i-arrow" aria-hidden="true"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer class="ff-night ff-footer">
+  <img class="ff-footer-oni" src="assets/art/battle-sprite.png" width="192" height="192" alt="" aria-hidden="true">
+  <img class="ff-brush" src="assets/textures/brush-slash-glow.webp" alt="" aria-hidden="true" style="right: -10%; bottom: -60px; width: 700px; opacity: .35;">
+  <div class="ff-wrap ff-footer-top">
+    <div style="display: flex; flex-direction: column; gap: 18px;">
+      <span class="ff-kicker">Flatfoot Labs</span>
+      <h2 class="ff-display ff-h2">Say hello. <em class="ff-line">Send a bug.</em></h2>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="ff-mailbox"><span>joe@flatfootlabs.com</span><a class="ff-btn ff-btn--violet" href="mailto:joe@flatfootlabs.com">Email<i class="ff-i ff-i-mail" aria-hidden="true"></i></a></div>
+      <a class="ff-btn ff-btn--outline" href="https://github.com/jmaloney95/Wishes-Game/issues" style="align-self: flex-start;">Report a bug on GitHub<i class="ff-i ff-i-external" aria-hidden="true"></i></a>
+      <p lang="ja" style="margin: 10px 0 0; font-family: var(--font-jp); font-size: 22px; line-height: 1.2; color: var(--gold);">すべての願いには代償がある。</p>
+      <p style="margin: 0; font-size: 13px; color: var(--on-night-faint);">Every wish has a price.</p>
+    </div>
+  </div>
+  <div class="ff-wrap ff-footer-bottom">
+    <a class="ff-logo" href="./"><img src="assets/art/shadow-jirachi-logo.png" width="49" height="52" alt=""><span class="ff-logo-word" style="font-size: 20px;">Wishes of Tomorrow<small>A FLATFOOT GAMES RELEASE</small></span></a>
+    <span>© 2026 Flatfoot Labs</span>
+    <nav class="ff-footer-links" aria-label="Footer">
+      <a href="labs">Flatfoot Labs</a>
+      <a href="https://github.com/jmaloney95/Wishes-Game">GitHub</a>
+      <a href="mailto:joe@flatfootlabs.com">Email</a>
+      <a href="#top">Back to top</a>
+    </nav>
+  </div>
+  <div class="nx-goldband">
+    <p class="nx-platforms">Game Boy Advance<i aria-hidden="true">|</i>Any GBA emulator<i aria-hidden="true">|</i>flatfootlabs.com</p>
+    <p class="nx-legal">Pokémon Wishes of Tomorrow is a free, non-commercial fan game. Pokémon and all related names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc. Not affiliated with or endorsed by them. Each card's artist is credited on the card.</p>
+  </div>
+</footer>
+
+<script src="assets/binder/binder.js?v=20261116c" defer></script>
+</body>
+</html>
