@@ -584,9 +584,11 @@
     window.EJS_onGameStart = function () {
       btn.disabled = false;
       btn.textContent = "Playing";
+      var supplied = !!pendingSave;
       if (pendingSave) loadSave();
       makeFastForwardToggle();
       restrictMenuToButton();
+      startKeeping(supplied);
     };
 
     var s = document.createElement("script");
@@ -627,6 +629,196 @@
     }
   }
 
+  /* ── keeping the game between visits ──────────────────────────────
+     EmulatorJS keeps the cartridge save in this browser (IndexedDB, under
+     the game's name), but only writes it there every 5 minutes, so a
+     refresh soon after saving in the game lost it. Worse, on every
+     beforeunload it ends the game by writing the save and unmounting its
+     storage, and a page that dies in the middle of that leaves the save
+     deleted from storage. So here:
+     - the core writes its save every 5 seconds while playing, and when
+       the tab is hidden (switching tabs or apps);
+     - each new save is also copied into this site's own store in one
+       write, which lands whole or not at all;
+     - on beforeunload (this listener is added before EmulatorJS's) the
+       save is written and copied one last time, and EmulatorJS's own
+       exit writes are switched off for the unload;
+     - on every boot, the copy goes back in if EmulatorJS's own is missing
+       or older (a save loaded through the Update tab wins over both).
+     The patched ROM is kept too, so a returning player gets "Continue"
+     instead of patching again. None of it leaves the device, and any
+     storage failure (private mode, a full disk) just means the old
+     patch-again route. */
+  var KEEP = { db: "wot-player", store: "keep" };
+  var keepTimer = null, keepTicks = 0, leaving = false, lastSaveCrc = null;
+
+  // One connection, kept open: a write during beforeunload has to be
+  // issued right away, not after an open that may never finish.
+  var keepConn = null;
+  function keepDb() {
+    if (keepConn) return Promise.resolve(keepConn);
+    return new Promise(function (resolve, reject) {
+      if (!window.indexedDB) return reject(new Error("no IndexedDB"));
+      var req = indexedDB.open(KEEP.db, 1);
+      req.onupgradeneeded = function () { req.result.createObjectStore(KEEP.store); };
+      req.onsuccess = function () {
+        keepConn = req.result;
+        keepConn.onversionchange = function () { keepConn.close(); keepConn = null; };
+        resolve(keepConn);
+      };
+      req.onerror = function () { reject(req.error); };
+    });
+  }
+  function keepTx(mode, work) {
+    return keepDb().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction(KEEP.store, mode), out = work(tx.objectStore(KEEP.store));
+        tx.oncomplete = function () { resolve(out && out.result); };
+        tx.onerror = tx.onabort = function () { reject(tx.error); };
+      });
+    });
+  }
+  function keepGet(key) { return keepTx("readonly", function (st) { return st.get(key); }); }
+
+  // The cartridge save: the core writes it to its file (EmulatorJS's
+  // storage), then a copy goes to this site's store if it changed.
+  function keepSave(evenIfLeaving) {
+    var em = window.EJS_emulator, gm = em && em.gameManager, bytes;
+    if ((leaving && !evenIfLeaving) || !em || !em.started || !gm || !gm.saveSaveFiles || gm.saveSaveFiles === noWrite) return;
+    try {
+      gm.saveSaveFiles();
+      bytes = gm.getSaveFile(false);
+    } catch (e) { return; /* the core is busy; next tick */ }
+    if (!bytes || !bytes.length) return;
+    var sum = crc32(bytes);
+    if (sum === lastSaveCrc) return;
+    var copy = new Uint8Array(bytes);
+    keepTx("readwrite", function (st) { st.put({ bytes: copy, at: Date.now() }, "save"); })
+      .then(function () { lastSaveCrc = sum; }).catch(function () {});
+  }
+  // On boot: put the kept copy back if EmulatorJS's own is missing or older.
+  function restoreSave() {
+    return keepGet("save").then(function (copy) {
+      var gm = window.EJS_emulator && window.EJS_emulator.gameManager;
+      if (!copy || !copy.bytes || !gm || !gm.getSaveFilePath) return;
+      var path = gm.getSaveFilePath(), fileAt = 0, exists = false;
+      try {
+        exists = gm.FS.analyzePath(path).exists;
+        if (exists) fileAt = +gm.FS.stat(path).mtime;
+      } catch (e) { /* treat as missing */ }
+      lastSaveCrc = crc32(copy.bytes);
+      if (exists && fileAt >= copy.at - 1000) return;
+      pendingSave = copy.bytes instanceof Uint8Array ? copy.bytes : new Uint8Array(copy.bytes);
+      loadSave();
+    }).catch(function () {});
+  }
+  function touchPlayed() {
+    keepGet("meta").then(function (meta) {
+      if (!meta) return;
+      meta.playedAt = Date.now();
+      return keepTx("readwrite", function (st) { st.put(meta, "meta"); });
+    }).catch(function () {});
+  }
+  function noWrite() {}
+  function onBeforeUnload() {
+    keepSave(true);
+    leaving = true;
+    var gm = window.EJS_emulator && window.EJS_emulator.gameManager;
+    if (!gm || !gm.saveSaveFiles || gm.saveSaveFiles === noWrite) return;
+    var real = gm.saveSaveFiles;
+    gm.saveSaveFiles = noWrite;
+    // Still here a second later: the unload was called off.
+    setTimeout(function () { gm.saveSaveFiles = real; leaving = false; }, 1000);
+  }
+
+  // A page that is unloading also turns hidden, and its pagehide comes in
+  // the same moment; a short wait tells the two apart, so switching tabs
+  // or apps writes the save but a refresh or a closed tab doesn't.
+  function onHidden() {
+    if (document.visibilityState !== "hidden") return;
+    setTimeout(function () {
+      if (!leaving && document.visibilityState === "hidden") { keepSave(); touchPlayed(); }
+    }, 100);
+  }
+  function onPageHide(e) {
+    if (!e.persisted) leaving = true;
+    touchPlayed();
+  }
+  function startKeeping(supplied) {
+    if (keepTimer) return;
+    window.addEventListener("pageshow", function () { leaving = false; });
+    (supplied ? Promise.resolve() : restoreSave()).then(function () {
+      keepTimer = setInterval(function () {
+        keepSave();
+        if (++keepTicks % 12 === 0) touchPlayed();
+      }, 5000);
+    });
+    document.addEventListener("visibilitychange", onHidden);
+    window.addEventListener("pagehide", onPageHide);
+    // The ROM itself, once per version.
+    var rom = patchedRom;
+    if (!rom) return;
+    var crc = hex8(crc32(rom));
+    keepGet("meta").then(function (meta) {
+      if (meta && meta.crc === crc) return touchPlayed();
+      return keepTx("readwrite", function (st) {
+        st.put(rom, "rom");
+        st.put({ crc: crc, name: outputName, size: rom.length, keptAt: Date.now(), playedAt: Date.now() }, "meta");
+      });
+    }).catch(function () {});
+  }
+  function forgetKept() {
+    return keepTx("readwrite", function (st) { st.delete("rom"); st.delete("meta"); }).catch(function () {});
+  }
+
+  function whenText(t) {
+    var d = new Date(t), now = new Date();
+    var time = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    if (d.toDateString() === now.toDateString()) return "today at " + time;
+    var y = new Date(now); y.setDate(now.getDate() - 1);
+    if (d.toDateString() === y.toDateString()) return "yesterday at " + time;
+    return d.toLocaleDateString([], { month: "short", day: "numeric" });
+  }
+
+  // A returning player: a "Continue" row on top of the patch steps.
+  function offerContinue(root) {
+    var list = root.querySelector('[data-panel="patch-new"] .ff-quest-list');
+    if (!list) return;
+    keepGet("meta").then(function (meta) {
+      if (!meta || !meta.crc) return;
+      var row = document.createElement("li");
+      row.className = "ff-quest-row";
+      row.setAttribute("data-continue", "");
+      row.innerHTML =
+        '<span class="ff-quest-num" aria-hidden="true">&#9654;</span>' +
+        '<div style="min-width: 0;"><div class="ff-quest-name">Continue your game</div>' +
+        '<div class="ff-quest-sub">Kept in this browser, last played <span data-continue-when></span>. ' +
+        '<button type="button" data-continue-forget style="background: none; border: 0; padding: 0; color: inherit; font: inherit; text-decoration: underline; cursor: pointer;">Forget it</button></div></div>' +
+        '<div class="ff-quest-end"><button type="button" class="ff-btn ff-btn--violet ff-btn--sm" data-continue-play>Continue</button></div>';
+      row.querySelector("[data-continue-when]").textContent = whenText(meta.playedAt || meta.keptAt);
+      list.insertBefore(row, list.firstChild);
+      var btn = row.querySelector("[data-continue-play]");
+      btn.addEventListener("click", function () {
+        if (playerBooted) { ui.player.hidden = false; ui.player.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
+        btn.disabled = true;
+        btn.textContent = "Loading…";
+        keepGet("rom").then(function (rom) {
+          if (!rom || !rom.length) throw new Error("gone");
+          patchedRom = rom instanceof Uint8Array ? rom : new Uint8Array(rom);
+          outputName = meta.name || outputName;
+          ui.activePlay = btn;
+          bootPlayer();
+        }).catch(function () {
+          row.remove();
+          say("bad", "Your kept game is gone from this browser.", "Patch your ROM again below; your save is still here and loads when you press Play.");
+        });
+      });
+      row.querySelector("[data-continue-forget]").addEventListener("click", function () {
+        forgetKept().then(function () { row.remove(); });
+      });
+    }).catch(function () {});
+  }
+
   function closePlayer() {
     if (fsActive) toggleFs();
     ui.player.hidden = true;
@@ -651,6 +843,9 @@
 
     ui.play = root.querySelector("[data-patch-play]");
     ui.player = root.querySelector("[data-player]");
+    offerContinue(root);
+    // Before EmulatorJS adds its own (it does when the player boots).
+    window.addEventListener("beforeunload", onBeforeUnload);
 
     ui.romInput.addEventListener("change", function () { onRom(this.files[0]); });
     ui.patchInput.addEventListener("change", function () { onPatch(this.files[0]); });
