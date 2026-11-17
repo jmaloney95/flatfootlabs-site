@@ -21,7 +21,7 @@
      launch day; a .bin copy of a .bps (the same bytes) downloads from the
      cache. `name` is what the player sees. */
   var PATCH = {
-    url: "patches/wishes-of-tomorrow-1.3.0.bps",
+    url: "patches/wishes-of-tomorrow-1.3.0.bin",
     name: "wishes-of-tomorrow-1.3.0.bps",
     outputName: "Wishes of Tomorrow 1.3.0.gba",
     base: {
