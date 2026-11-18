@@ -724,19 +724,25 @@
 
   // ── packs opened by everyone: a free public counter (Abacus, no account). Each opened pack adds one and the
   // total shows under the pack. Previews on this computer count on a key of their own, so testing never touches
-  // the real number. If the counter can't be reached, the line just stays hidden. ──
+  // the real number. The counter is a busy free service that can take many seconds to answer, so the line shows
+  // the last total this browser saw straight away, reading the total never waits on adding this visitor's
+  // packs, and an add gets a long time before it's given up (cutting one off after the counter took it would
+  // send it again later). If the counter has never answered here, the line stays hidden. ──
   var TALLY = "https://abacus.jasoncameron.dev/", TALLY_KEY = "flatfootlabs.com/" + (local ? "mega-packs-test" : "mega-packs");
-  var tallyEl = null;
+  var TALLY_LAST = "pk-tally-last";
+  var tallyEl = null, tallyShown = 0;
   function showTally(d) {
     var n = d && d.value;
-    if (!tallyEl || typeof n !== "number" || n < 1) return;
+    if (!tallyEl || typeof n !== "number" || n < 1 || n < tallyShown) return;
+    tallyShown = n;
     tallyEl.textContent = String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (n === 1 ? " pack" : " packs") + " opened";
     tallyEl.hidden = false;
+    try { localStorage.setItem(TALLY_LAST, String(n)); } catch (e) { /* storage off: no memory between visits */ }
   }
   function tally(path) {
     if (!window.fetch) return Promise.resolve(null);
     var ctl = window.AbortController ? new AbortController() : null;
-    var stop = ctl ? setTimeout(function () { ctl.abort(); }, 12000) : 0;   // a slow counter never hangs on
+    var stop = ctl ? setTimeout(function () { ctl.abort(); }, path === "hit" ? 45000 : 20000) : 0;   // never hang on
     return fetch(TALLY + path + "/" + TALLY_KEY, ctl ? { cache: "no-store", signal: ctl.signal } : { cache: "no-store" })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) { clearTimeout(stop); showTally(d); return d && typeof d.value === "number" ? d : null; },
@@ -760,7 +766,13 @@
       if (d) { waiting(-1); flush(); }
     });
   }
-  function readTally() { if (waiting()) flush(); else tally("get"); }
+  function readTally() {
+    var last = 0;
+    try { last = +localStorage.getItem(TALLY_LAST) || 0; } catch (e) { /* no storage */ }
+    if (last) showTally({ value: last });
+    tally("get");
+    flush();
+  }
   function countPack() { waiting(1); flush(); }
 
   // ── state classes: on the pack's own block, and on its stand-in in focus (the CSS keys off both) ──
