@@ -722,13 +722,13 @@
     countEl.textContent = owned(readBinder()) + " / " + CARDS.length;
   }
 
-  // ── packs opened by everyone: a free public counter (Abacus, no account). Each opened pack adds one and the
-  // total shows under the pack. Previews on this computer count on a key of their own, so testing never touches
-  // the real number. The counter is a busy free service that can take many seconds to answer, so the line shows
-  // the last total this browser saw straight away, reading the total never waits on adding this visitor's
-  // packs, and an add gets a long time before it's given up (cutting one off after the counter took it would
-  // send it again later). If the counter has never answered here, the line stays hidden. ──
-  var TALLY = "https://abacus.jasoncameron.dev/", TALLY_KEY = "flatfootlabs.com/" + (local ? "mega-packs-test" : "mega-packs");
+  // ── packs opened by everyone: the site's own counter at /api/packs (GET reads the total, POST adds one opened
+  // pack). Each opened pack adds one and the total shows under the pack. Previews on this computer count on a test
+  // counter of their own, so testing never touches the real number. The line shows the last total this browser
+  // saw straight away, reading the total never waits on adding this visitor's packs, and an add gets a long time
+  // before it's given up (cutting one off after the counter took it would send it again later). If the counter
+  // has never answered here, the line stays hidden. ──
+  var TALLY = local ? "https://flatfootlabs.com/api/packs?key=test" : "api/packs";
   var TALLY_LAST = "pk-tally-last";
   var tallyEl = null, tallyShown = 0;
   function showTally(d) {
@@ -743,7 +743,9 @@
     if (!window.fetch) return Promise.resolve(null);
     var ctl = window.AbortController ? new AbortController() : null;
     var stop = ctl ? setTimeout(function () { ctl.abort(); }, 45000) : 0;   // never hang on forever
-    return fetch(TALLY + path + "/" + TALLY_KEY, ctl ? { cache: "no-store", signal: ctl.signal } : { cache: "no-store" })
+    var opts = { method: path === "hit" ? "POST" : "GET", cache: "no-store" };
+    if (ctl) opts.signal = ctl.signal;
+    return fetch(TALLY, opts)
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) { clearTimeout(stop); showTally(d); return d && typeof d.value === "number" ? d : null; },
             function () { clearTimeout(stop); return null; });
