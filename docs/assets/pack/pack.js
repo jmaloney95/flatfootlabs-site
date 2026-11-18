@@ -742,7 +742,7 @@
   function tally(path) {
     if (!window.fetch) return Promise.resolve(null);
     var ctl = window.AbortController ? new AbortController() : null;
-    var stop = ctl ? setTimeout(function () { ctl.abort(); }, path === "hit" ? 45000 : 20000) : 0;   // never hang on
+    var stop = ctl ? setTimeout(function () { ctl.abort(); }, 45000) : 0;   // never hang on forever
     return fetch(TALLY + path + "/" + TALLY_KEY, ctl ? { cache: "no-store", signal: ctl.signal } : { cache: "no-store" })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) { clearTimeout(stop); showTally(d); return d && typeof d.value === "number" ? d : null; },
@@ -770,7 +770,12 @@
     var last = 0;
     try { last = +localStorage.getItem(TALLY_LAST) || 0; } catch (e) { /* no storage */ }
     if (last) showTally({ value: last });
-    tally("get");
+    // a read that fails tries again a little later, a few times, until a total has been shown
+    (function read(tries) {
+      tally("get").then(function (d) {
+        if (!d && !tallyShown && tries > 1) setTimeout(function () { read(tries - 1); }, 15000);
+      });
+    })(4);
     flush();
   }
   function countPack() { waiting(1); flush(); }
